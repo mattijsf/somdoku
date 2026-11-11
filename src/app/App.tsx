@@ -4,6 +4,7 @@ import { PlayScreen } from "../features/play/PlayScreen"
 import { RulesDialog } from "../features/rules/RulesDialog"
 import { TopBar } from "../features/top/TopBar"
 import { useKeyboard } from "../hooks/useKeyboard"
+import { useNewDay } from "../hooks/useNewDay"
 import { usePuzzleName } from "../hooks/usePuzzleName"
 import { useGameStore, viewOf } from "../stores/useGameStore"
 
@@ -15,6 +16,7 @@ export function App(): ReactElement {
   const view = useGameStore(viewOf)
   const name = usePuzzleName()
   useKeyboard()
+  useNewDay()
 
   useEffect(() => {
     document.body.dataset.view = view

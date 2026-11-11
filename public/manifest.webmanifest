@@ -1,0 +1,17 @@
+{
+  "name": "Somdoku",
+  "short_name": "Somdoku",
+  "description": "A Japanese sums puzzle every day. Solve it and share your score.",
+  "lang": "en",
+  "id": "/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#EDF1EC",
+  "theme_color": "#EDF1EC",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
