@@ -3,7 +3,7 @@
 // Woordle, the score is how many tries it took, and a game may be spread over the day.
 
 import { at } from "./at"
-import { generate, hash, type Puzzle } from "./puzzle"
+import { generate, hash, rng, type Puzzle } from "./puzzle"
 
 export const FIRST_DAY = "2026-11-11"
 export const MAX_CHECKS = 6
@@ -32,11 +32,29 @@ export const puzzleNumber = (day: string): number =>
   Math.round((utc(day) - utc(FIRST_DAY)) / 86400000) + 1
 
 /**
- * Everyone gets the same puzzle on the same day: 5 by 5 with the digits 1 to 4, so one black
- * cell in every row and column. The seed still says "sommetje", the game's first name.
+ * How hard a day's puzzle is: the number of rounds of reasoning, row by row and column by column,
+ * that it takes to finish. 3 is light, 5 (or more) is stiff. It is drawn from the date, so it
+ * differs from day to day without a pattern and is still the same for everyone.
  */
-export const dailyPuzzle = (day: string): Puzzle =>
-  generate(hash(`sommetje ${day}`), { n: 5, k: 4, minPasses: 3 })
+export const LEVELS: readonly number[] = [3, 4, 5]
+export const levelOf = (day: string): number =>
+  at(LEVELS, Math.floor(rng(hash(`niveau ${day}`))() * LEVELS.length))
+
+/**
+ * Everyone gets the same puzzle on the same day: always 5 by 5 with the digits 1 to 4, so one
+ * black cell in every row and column. Only how hard it is varies. The seed still says
+ * "sommetje", the game's first name.
+ */
+export function dailyPuzzle(day: string): Puzzle {
+  const level = levelOf(day)
+  const hardest = level === LEVELS.at(-1)
+  return generate(hash(`sommetje ${day}`), {
+    n: 5,
+    k: 4,
+    minPasses: level,
+    maxPasses: hardest ? 99 : level,
+  })
+}
 
 export const isFilled = (value: Value): boolean => value !== EMPTY && value !== WHITE
 

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next"
 import { at } from "../../lib/at"
 import { EMPTY, WHITE, doubles, spare, type Value } from "../../lib/game"
 import { BLACK } from "../../lib/puzzle"
-import { blacks, k, n, puzzle, rowOf, solution } from "../../stores/today"
+import { blacks, n, puzzle, rowOf, solution } from "../../stores/today"
 import { locked, useGameStore } from "../../stores/useGameStore"
 import { STEP } from "../../utils/motion"
 
@@ -77,15 +77,8 @@ export function Board(): ReactElement {
       aria-label={t("board.label")}
       style={{ "--n": n, "--runs": runs }}
     >
-      {/* The corner says what goes in, as the booklet does at the top of the page: which digits,
-          and how many black cells in every row and column. */}
-      <div className="recipe" role="img" aria-label={t("board.recipe", { k, count: blacks })}>
-        <span>{`1–${k}`}</span>
-        <span>
-          <i />
-          {blacks}
-        </span>
-      </div>
+      {/* the corner stays empty: every day has the same digits and one black cell */}
+      <div />
       {puzzle.cols.map((clue, c) => (
         <ClueLine
           key={c}

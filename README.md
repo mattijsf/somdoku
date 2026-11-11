@@ -17,9 +17,8 @@ files plus `tsc -b`, and commitlint on the message (Conventional Commits); on pu
 
 ## How it works
 
-- `src/lib/`: the rules, generator and solver, and the game logic. No React, no DOM. As in the puzzle
-  booklet: 5 by 5, digits 1 to 4, every digit exactly once and one black cell per row and column;
-  the corner of the grid says what goes in. A day's puzzle comes from its date, so changing the
+- `src/lib/`: the rules, generator and solver, and the game logic. No React, no DOM. 5 by 5, digits
+  1 to 4, one black cell per row and column. A day's puzzle comes from its date, so changing the
   generator changes every day.
 - `src/stores/`: zustand stores for the game and the UI. The game is kept in `localStorage`.
 - `src/features/`: the screens (`play`, `done`), the top bar and the rules.

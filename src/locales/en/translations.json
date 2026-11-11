@@ -6,8 +6,6 @@
   },
   "board": {
     "label": "Puzzle",
-    "recipe_one": "Digits 1 to {{k}}, one black cell per row and column",
-    "recipe_other": "Digits 1 to {{k}}, {{count}} black cells per row and column",
     "cell": "Row {{row}}, column {{col}}: {{value}}",
     "cellRight": "Row {{row}}, column {{col}}: {{value}}, right",
     "empty": "empty",

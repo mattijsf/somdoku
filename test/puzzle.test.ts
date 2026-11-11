@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest"
 import {
   EMPTY,
+  LEVELS,
   MAX_CHECKS,
   WHITE,
   dailyPuzzle,
   doubles,
   isFilled,
+  levelOf,
   puzzleNumber,
   rowsRight,
   shareText,
@@ -58,14 +60,41 @@ describe("puzzles", () => {
     // day's puzzle: fine while the game is being made, not once people play along every day.
     expect(dailyPuzzle("2026-11-11")).toMatchObject({
       blacks: 1,
-      rows: [[10], [1, 9], [6, 4], [5, 5], [10]],
-      cols: [[10], [3, 7], [7, 3], [5, 5], [10]],
+      rows: [[10], [3, 7], [10], [9, 1], [4, 6]],
+      cols: [[4, 6], [10], [4, 6], [9, 1], [10]],
     })
     expect(dailyPuzzle("2026-11-12")).toMatchObject({
       blacks: 1,
       rows: [[10], [9, 1], [3, 7], [10], [4, 6]],
       cols: [[10], [10], [6, 4], [4, 6], [8, 2]],
     })
+  })
+
+  it("differ in how hard they are from day to day, without a pattern, on the same grid", () => {
+    const days = Array.from({ length: 365 }, (_, i) =>
+      new Date(Date.UTC(2026, 10, 11 + i)).toISOString().slice(0, 10)
+    )
+    const seen: Record<number, number> = {}
+    let run = 0
+    let longest = 0
+    days.forEach((day, i) => {
+      const level = levelOf(day)
+      const { passes } = dailyPuzzle(day)
+      // the rounds of reasoning the puzzle takes are the level; the stiffest level has no upper end
+      if (level === LEVELS.at(-1)) {
+        expect(passes).toBeGreaterThanOrEqual(level)
+      } else {
+        expect(passes).toBe(level)
+      }
+      seen[level] = (seen[level] ?? 0) + 1
+      run = i > 0 && level === levelOf(days[i - 1] ?? "") ? run + 1 : 1
+      longest = Math.max(longest, run)
+    })
+    // each level on roughly a third of the days, and never the same level for weeks on end
+    for (const level of LEVELS) {
+      expect(seen[level]).toBeGreaterThan(90)
+    }
+    expect(longest).toBeLessThan(10)
   })
 
   it("have one solution, also when every grid that fits the clues is tried", () => {

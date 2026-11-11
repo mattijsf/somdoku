@@ -6,8 +6,6 @@
   },
   "board": {
     "label": "Puzzel",
-    "recipe_one": "Cijfers 1 tot en met {{k}}, één zwart vakje per rij en kolom",
-    "recipe_other": "Cijfers 1 tot en met {{k}}, {{count}} zwarte vakjes per rij en kolom",
     "cell": "Rij {{row}}, kolom {{col}}: {{value}}",
     "cellRight": "Rij {{row}}, kolom {{col}}: {{value}}, goed",
     "empty": "leeg",
