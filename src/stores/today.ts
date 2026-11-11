@@ -1,16 +1,10 @@
-// Which puzzle: today's, the same for everyone, or a practice puzzle (?oefen=3, optionally
-// &maat=4 or 6).
-import { dailyPuzzle, dayString, practicePuzzle, puzzleNumber } from "../lib/game"
+// One puzzle a day, the same for everyone. Nothing in the address or anywhere else changes it:
+// there is nothing to choose, and that is the point.
+import { dailyPuzzle, dayString, puzzleNumber } from "../lib/game"
 
 export const BRAND = "Somdoku"
-const query = new URLSearchParams(location.search)
-/** The number of the practice puzzle, or null for today's. */
-export const practice = query.has("oefen")
-  ? Math.max(1, parseInt(query.get("oefen") ?? "", 10) || 1)
-  : null
-export const size = [4, 5, 6].includes(Number(query.get("maat"))) ? Number(query.get("maat")) : 5
 export const day = dayString()
-export const puzzle = practice ? practicePuzzle(practice, size) : dailyPuzzle(day)
+export const puzzle = dailyPuzzle(day)
 export const { n, k, blacks } = puzzle // blacks: how many black cells every row and column has
 export const solution = puzzle.solution.flat()
 export const number = puzzleNumber(day)

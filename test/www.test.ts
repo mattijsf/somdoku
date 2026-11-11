@@ -9,17 +9,17 @@ const visit = async (url: string): Promise<Response> =>
 describe("the other names of the site", () => {
   it.each([
     ["https://www.somdoku.nl/", "https://somdoku.nl/"],
-    ["https://www.somdoku.nl/?oefen=3&maat=6", "https://somdoku.nl/?oefen=3&maat=6"],
+    ["https://www.somdoku.nl/?a=1&b=2", "https://somdoku.nl/?a=1&b=2"],
     ["http://www.somdoku.nl/", "https://somdoku.nl/"],
     ["https://somdoku.pages.dev/", "https://somdoku.nl/"],
-    ["https://somdoku.pages.dev/?oefen=3", "https://somdoku.nl/?oefen=3"],
+    ["https://somdoku.pages.dev/?a=1", "https://somdoku.nl/?a=1"],
   ])("send %s on to %s", async (from, to) => {
     const response = await visit(from)
     expect([response.status, response.headers.get("location")]).toEqual([301, to])
   })
 
   it.each([
-    "https://somdoku.nl/?oefen=3",
+    "https://somdoku.nl/?a=1",
     "https://19b585b2.somdoku.pages.dev/",
     "http://localhost:8788/",
   ])("leave %s alone", async url => {

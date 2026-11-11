@@ -1,7 +1,7 @@
 import type { ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { MAX_CHECKS } from "../../lib/game"
-import { BRAND, number, practice } from "../../stores/today"
+import { BRAND, number } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
 import { useUiStore } from "../../stores/useUiStore"
 import { Tally } from "./Tally"
@@ -23,7 +23,7 @@ export function TopBar(): ReactElement {
         <b>{BRAND}</b>
       </a>
       <span id="nr" className="nr">
-        {practice ? t("top.practice", { number: practice }) : `#${number}`}
+        #{number}
       </span>
       <span
         id="tries"

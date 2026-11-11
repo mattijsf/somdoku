@@ -6,7 +6,6 @@ import {
   dailyPuzzle,
   doubles,
   isFilled,
-  practicePuzzle,
   puzzleNumber,
   rowsRight,
   shareText,
@@ -106,16 +105,15 @@ describe("puzzles", () => {
     expect(found).toEqual([solution])
   })
 
-  it("come in other sizes for practice, by the same rules", () => {
-    for (const [n, k, blacks] of [
-      [4, 3, 1],
-      [5, 4, 1],
-      [6, 4, 2],
+  it("work in other sizes too, by the same rules", () => {
+    for (const [n, k] of [
+      [4, 3],
+      [6, 4],
     ] as const) {
-      const puzzle = practicePuzzle(1, n)
-      expect(puzzle).toMatchObject({ n, k, blacks })
+      const puzzle = generate(hash(`maat ${n}`), { n, k, minPasses: 2 })
+      expect(puzzle.blacks).toBe(n - k)
       for (const line of linesOf(puzzle.solution)) {
-        expect(line.filter(value => value === 0)).toHaveLength(blacks)
+        expect(line.filter(value => value === 0)).toHaveLength(n - k)
         expect(new Set(line.filter(value => value > 0)).size).toBe(k)
       }
     }

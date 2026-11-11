@@ -1,7 +1,7 @@
 // What a phone needs to install the game as an app: a manifest the page points to, with icons
 // that exist and are the size they say.
 import { describe, expect, it } from "vitest"
-import { read, readBytes } from "./files"
+import { read, readBytes, sources } from "./files"
 
 interface Manifest {
   icons: { src: string; sizes: string; purpose?: string }[]
@@ -45,5 +45,14 @@ describe("the installable app", () => {
       'navigator.serviceWorker.register("./sw.js")'
     )
     expect(read("src/sw.ts").length).toBeGreaterThan(0)
+  })
+})
+
+describe("the choice", () => {
+  it("offers nothing to choose: no practice puzzles, no sizes, nothing read from the address", () => {
+    for (const [path, text] of sources()) {
+      expect(text, path).not.toMatch(/location\.search|URLSearchParams|oefen|maat/)
+    }
+    expect(read("index.html")).not.toMatch(/oefen/)
   })
 })

@@ -1,9 +1,7 @@
 {
-  "practiceName": "{{brand}} oefen {{number}}",
   "top": {
     "home": "Somdoku, naar de puzzel van vandaag",
     "help": "Uitleg",
-    "practice": "oefen {{number}}",
     "checks": "{{used}} van {{max}} controles gebruikt"
   },
   "board": {
@@ -57,7 +55,6 @@
     "share": "Deel",
     "copied": "Gekopieerd",
     "copyAbove": "Kopieer de tekst hierboven",
-    "tomorrow": "Morgen staat er een nieuwe.",
-    "more": "Nog een oefenpuzzel"
+    "tomorrow": "Morgen staat er een nieuwe."
   }
 }

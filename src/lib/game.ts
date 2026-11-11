@@ -38,12 +38,6 @@ export const puzzleNumber = (day: string): number =>
 export const dailyPuzzle = (day: string): Puzzle =>
   generate(hash(`sommetje ${day}`), { n: 5, k: 4, minPasses: 3 })
 
-/** Practice puzzles: 4 by 4 with 1-3, 5 by 5 with 1-4, 6 by 6 with 1-4 and two black cells in every row and column. */
-export function practicePuzzle(number: number, n = 5): Puzzle {
-  const k = n === 6 ? 4 : n - 1
-  return generate(hash(`oefen ${n} ${number}`), { n, k, minPasses: n === 5 ? 3 : 2 })
-}
-
 export const isFilled = (value: Value): boolean => value !== EMPTY && value !== WHITE
 
 /** The places in a line that hold a digit that is there twice: a broken rule anyone can see. */

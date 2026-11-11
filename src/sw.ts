@@ -70,7 +70,7 @@ self.addEventListener("fetch", event => {
   }
   const url = new URL(request.url)
 
-  // The page, whatever comes after the ? (a practice puzzle is the same page): fresh if possible.
+  // The page, whatever comes after the ? (it is the same page): fresh if possible.
   if (request.mode === "navigate" && url.origin + url.pathname === HOME) {
     event.respondWith(
       fetch(request)

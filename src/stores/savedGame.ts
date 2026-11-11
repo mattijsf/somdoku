@@ -3,7 +3,7 @@
 // the game is still being made, a game kept from the earlier one is dropped.
 import { EMPTY, WHITE, type Check, type Value } from "../lib/game"
 import { isRecord, kept, store } from "../utils/storage"
-import { day, k, n, practice, puzzle, size } from "./today"
+import { day, k, n, puzzle } from "./today"
 
 export interface Game {
   sums: string
@@ -13,7 +13,7 @@ export interface Game {
   finished: "won" | "lost" | null
 }
 
-const storeKey = practice ? `somdoku:oefen:${size}x${k}:${practice}` : `somdoku:${day}`
+const storeKey = `somdoku:${day}`
 const sums = JSON.stringify([puzzle.rows, puzzle.cols])
 
 export const freshGame = (): Game => ({

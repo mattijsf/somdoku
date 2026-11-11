@@ -5,7 +5,7 @@ import { RulesDialog } from "../features/rules/RulesDialog"
 import { TopBar } from "../features/top/TopBar"
 import { useKeyboard } from "../hooks/useKeyboard"
 import { useNewDay } from "../hooks/useNewDay"
-import { usePuzzleName } from "../hooks/usePuzzleName"
+import { name } from "../stores/today"
 import { useGameStore, viewOf } from "../stores/useGameStore"
 
 /**
@@ -14,7 +14,6 @@ import { useGameStore, viewOf } from "../stores/useGameStore"
  */
 export function App(): ReactElement {
   const view = useGameStore(viewOf)
-  const name = usePuzzleName()
   useKeyboard()
   useNewDay()
 
@@ -23,7 +22,7 @@ export function App(): ReactElement {
   }, [view])
   useEffect(() => {
     document.title = name
-  }, [name])
+  }, [])
 
   return (
     <>
