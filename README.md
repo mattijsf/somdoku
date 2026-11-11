@@ -25,6 +25,6 @@ files plus `tsc -b`, and commitlint on the message (Conventional Commits); on pu
 - `src/features/`: the screens (`play`, `done`), the top bar and the rules.
 - `src/hooks/`, `src/utils/`: shared pieces, the keyboard and storage.
 - `src/locales/`: English and Dutch translations (react-i18next).
-- `functions/_middleware.ts`: sends www.somdoku.nl on to somdoku.nl.
+- `functions/_middleware.ts`: sends www.somdoku.nl and somdoku.pages.dev on to somdoku.nl.
 - `art/`: source of the icon and `og.png`, the picture WhatsApp shows with the link; the top of each
   file says how to make it again.
