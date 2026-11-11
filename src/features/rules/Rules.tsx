@@ -1,3 +1,4 @@
+import { Check, Pencil, Rabbit } from "lucide-react"
 import type { ReactElement } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { BLACK } from "../../lib/puzzle"
@@ -37,18 +38,24 @@ export function Rules(): ReactElement {
       </div>
       <ul className="legend">
         <li>
-          <span className="swatch tick" aria-hidden="true" />
+          <span className="swatch" aria-hidden="true">
+            <Check className="icon" aria-hidden="true" />
+          </span>
           <span>{t("rules.solved")}</span>
         </li>
         <li>
-          <span className="swatch pen" aria-hidden="true" />
+          <span className="swatch" aria-hidden="true">
+            <Pencil className="icon" aria-hidden="true" />
+          </span>
           <span>
             <Trans i18nKey="rules.score" components={{ b: <b /> }} />
           </span>
         </li>
         <li>
-          <span className="swatch calm" aria-hidden="true" />
-          <span>{t("rules.noClock")}</span>
+          <span className="swatch" aria-hidden="true">
+            <Rabbit className="icon" aria-hidden="true" />
+          </span>
+          <span>{t("rules.quick")}</span>
         </li>
       </ul>
     </>

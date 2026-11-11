@@ -109,7 +109,7 @@ describe("filling in", () => {
   })
 
   it("says how many cells are still empty", () => {
-    expect(screen.getByText("Tap a cell, then a digit or black.")).toBeTruthy()
+    expect(screen.getByText("Tap a cell, then a digit or black. Or hold a cell.")).toBeTruthy()
     fill(0, 1)
     expect(screen.getByText(`${n * n - 1} cells still empty.`)).toBeTruthy()
   })
@@ -122,6 +122,58 @@ describe("filling in", () => {
     expect(useGameStore.getState().trail.edits).toBe(1)
     expect(screen.getByRole("img", { name: "1 change" })).toBeTruthy()
     expect(document.querySelector("#count")?.textContent).toBe("1")
+  })
+})
+
+describe("holding a cell", () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    render(<App />)
+  })
+
+  // the click that may follow letting go is swallowed, until the next tick
+  const letGo = (x: number, y: number): void => {
+    fireEvent.pointerUp(document, { clientX: x, clientY: y })
+    act(() => {
+      vi.advanceTimersByTime(1)
+    })
+  }
+  const hold = (i: number): void => {
+    fireEvent.pointerDown(cell(i), { button: 0, clientX: 0, clientY: 0 })
+    act(() => {
+      vi.advanceTimersByTime(400)
+    })
+  }
+  const picker = (): HTMLElement | null => document.querySelector<HTMLElement>(".picker")
+
+  it("brings up the values above it: let go on one to fill it in", () => {
+    expect(picker()?.hidden).toBe(true)
+    hold(2)
+    expect(picker()?.hidden).toBe(false)
+    expect(useGameStore.getState().selected).toBe(2)
+    // jsdom measures everything at 0, so the finger at 0,0 is at the first value: the digit 1
+    fireEvent.pointerMove(document, { clientX: 0, clientY: 0 })
+    expect(picker()?.querySelector(".pick.hot")?.textContent).toBe("1")
+    letGo(0, 0)
+    expect(useGameStore.getState().cells[2]).toBe(1)
+    expect(picker()?.hidden).toBe(true) // letting go always puts the row away
+  })
+
+  it("puts the values away when the finger sweeps off", () => {
+    hold(2)
+    fireEvent.pointerMove(document, { clientX: 600, clientY: 600 })
+    expect(picker()?.hidden).toBe(true) // swept away
+    letGo(0, 0)
+    expect(useGameStore.getState().cells[2]).toBe(EMPTY)
+  })
+
+  it("is a tap when the finger lets go before the values are up", () => {
+    fireEvent.pointerDown(cell(2), { button: 0, clientX: 0, clientY: 0 })
+    letGo(0, 0)
+    act(() => {
+      vi.advanceTimersByTime(400)
+    })
+    expect(picker()?.hidden).toBe(true)
   })
 })
 
@@ -185,6 +237,8 @@ describe("in Dutch", () => {
     render(<App />)
     expect(document.documentElement.lang).toBe("nl")
     expect(screen.getByRole("img", { name: "0 wijzigingen" })).toBeTruthy()
-    expect(screen.getByText("Tik een vakje, en dan een cijfer of zwart.")).toBeTruthy()
+    expect(
+      screen.getByText("Tik een vakje en dan een cijfer of zwart. Of houd een vakje ingedrukt.")
+    ).toBeTruthy()
   })
 })

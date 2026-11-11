@@ -19,7 +19,7 @@
     "erase": "Clear"
   },
   "note": {
-    "start": "Tap a cell, then a digit or black.",
+    "start": "Tap a cell, then a digit or black. Or hold a cell.",
     "open_one": "{{count}} cell still empty.",
     "open_other": "{{count}} cells still empty.",
     "wrong": "Everything is filled in, but it isn't right yet."
@@ -34,7 +34,7 @@
     "example": "Here the {{k}} stands alone, and {{parts}} = {{sum}}.",
     "solved": "Once everything is right, the puzzle is done by itself. Every step can be worked out, and you add up the sums yourself.",
     "score": "Your score is the number of <b>changes</b>: every time you alter or clear a digit or a black cell. Zero is flawless.",
-    "noClock": "There is no clock. You can simply carry on later today."
+    "quick": "Fill in faster: hold a cell, slide to a digit or black, and let go."
   },
   "done": {
     "flawless": "Flawless",

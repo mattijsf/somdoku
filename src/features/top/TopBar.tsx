@@ -1,3 +1,4 @@
+import { Pencil } from "lucide-react"
 import type { ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { BRAND, number } from "../../stores/today"
@@ -26,8 +27,11 @@ export function TopBar(): ReactElement {
       </span>
       <span id="tries" className="tries" role="img" aria-label={t("edits", { count: edits })}>
         <Tally />
-        <span id="count" className="count" aria-hidden="true">
-          {edits}
+        <span className="count" aria-hidden="true">
+          <span data-icon="pencil">
+            <Pencil className="icon" aria-hidden="true" />
+          </span>
+          <span id="count">{edits}</span>
         </span>
       </span>
       <button

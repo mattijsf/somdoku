@@ -2,7 +2,7 @@ import { EMPTY, type Value } from "../../lib/game"
 import { BLACK } from "../../lib/puzzle"
 import { k } from "../../stores/today"
 
-/** A key under the grid. */
+/** A key under the grid, and the same value in the row above a held cell. */
 export interface Key {
   value: Value
   kind: "digit" | "black" | "erase"

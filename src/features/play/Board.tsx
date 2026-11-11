@@ -5,6 +5,7 @@ import { BLACK } from "../../lib/puzzle"
 import { blacks, n, puzzle, rowOf } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
 import { STEP } from "../../utils/motion"
+import { holdCell, isSwallowing } from "./usePickerGestures"
 
 const runs = Math.max(...puzzle.cols.map(clue => clue.length)) // lines of sums above the columns
 const delay = (row: number): string => `${row * STEP}ms`
@@ -65,6 +66,8 @@ export function Board(): ReactElement {
       role="grid"
       aria-label={t("board.label")}
       style={{ "--n": n, "--runs": runs }}
+      // On a phone a long press may ask for a menu too: not here.
+      onContextMenu={event => event.preventDefault()}
     >
       {/* the corner stays empty: every day has the same digits and one black cell */}
       <div />
@@ -108,7 +111,12 @@ export function Board(): ReactElement {
                   wrong && "double"
                 )}
                 aria-label={t("board.cell", { row: r + 1, col: c + 1, value: says(value) })}
-                onClick={() => select(i)}
+                onPointerDown={event => holdCell(event, i)}
+                onClick={() => {
+                  if (!isSwallowing()) {
+                    select(i)
+                  }
+                }}
               >
                 {digit ? value : ""}
               </button>

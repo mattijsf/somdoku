@@ -67,8 +67,11 @@ body[data-view="done"] #play{flex:none}
 .tally .g,.bubble .g{background:var(--green)}
 .tally .y,.bubble .y{background:var(--amber)}
 .tally .new{animation:pip .3s calc(var(--d) + .15s) backwards}
-.count{font-weight:800;font-size:1.05rem;white-space:nowrap}
-.count::before{content:"✏️";font-size:.8em;margin-right:3px}
+.count{display:flex;align-items:center;gap:4px;font-weight:800;font-size:1.05rem;white-space:nowrap}
+.count [data-icon]{display:grid;color:var(--muted);font-size:.9em}
+/* icons: one set of line drawings, in the colour and size of the text around them */
+.icon{width:1em;height:1em;flex:none;stroke-width:2.25}
+.key .icon,.pick .icon{width:22px;height:22px}
 .round{width:44px;height:44px;margin-right:-6px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;
   touch-action:manipulation}
 .round::before{content:"?";width:32px;height:32px;border-radius:50%;background:var(--key);box-shadow:0 2px 0 var(--edge);
@@ -157,13 +160,7 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
   display:grid;place-items:center;font-style:normal;font-weight:800;font-size:1.15rem}
 .tiles i.black{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
 .sums{display:flex;gap:.5em;font-weight:750;padding-right:6px}
-.legend .swatch{width:24px;height:24px;border-radius:50%;font-weight:800;font-size:.85rem;line-height:1}
-.legend .tick{background:var(--green);color:#fff}
-.legend .tick::before{content:"✓"}
-.legend .pen{background:var(--amber);color:#231C03}
-.legend .pen::before{content:"✎"}
-.legend .calm{background:var(--near)}
-.legend .calm::before{content:"∞"}
+.legend .swatch{width:24px;height:24px;border-radius:7px;background:var(--near);color:var(--ink);font-size:17px}
 .rules + form{margin-top:16px}
 
 @keyframes tap{from{transform:scale(.86)}}
@@ -172,6 +169,18 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 @keyframes pop-clue{0%{color:var(--ink)}45%{transform:scale(1.15)}}
 @keyframes pip{from{transform:scale(.3);opacity:0}}
 @keyframes rise{from{transform:translateY(14px);opacity:0}}
+/* quick entry: hold a cell and the values come up in a row above it */
+.cell{-webkit-touch-callout:none}
+.picker{position:fixed;z-index:20;pointer-events:none;display:flex;gap:6px;padding:6px;border-radius:16px;background:var(--surface);
+  box-shadow:0 10px 28px rgba(0,0,0,.3),0 0 0 1px var(--line);animation:rise .12s;user-select:none;-webkit-user-select:none}
+.picker[hidden]{display:none}
+.pick{width:min(46px,calc((100vw - 58px) / 6));aspect-ratio:1;display:grid;place-items:center;padding:0;border:0;border-radius:11px;
+  font:inherit;font-weight:800;font-size:1.25rem;line-height:1;color:var(--ink);background:var(--key);box-shadow:0 2px 0 var(--edge);
+  transition:transform .08s}
+.pick.on{background:var(--tint-green)}
+.pick.hot{background:var(--green);color:#fff;transform:translateY(-4px)}
+@keyframes rise{from{opacity:0;transform:translateY(6px) scale(.96)}}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }

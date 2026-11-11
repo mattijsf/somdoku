@@ -19,7 +19,7 @@
     "erase": "Wis"
   },
   "note": {
-    "start": "Tik een vakje, en dan een cijfer of zwart.",
+    "start": "Tik een vakje en dan een cijfer of zwart. Of houd een vakje ingedrukt.",
     "open_one": "Nog {{count}} vakje leeg.",
     "open_other": "Nog {{count}} vakjes leeg.",
     "wrong": "Alles is ingevuld, maar het klopt nog niet."
@@ -34,7 +34,7 @@
     "example": "Hier staat de {{k}} alleen, en {{parts}} = {{sum}}.",
     "solved": "Staat alles goed, dan is de puzzel vanzelf klaar. Elke stap is af te leiden en de sommen reken je zelf na.",
     "score": "Je score is het aantal <b>wijzigingen</b>: elke keer dat je een cijfer of zwart vakje aanpast of wist. Nul is foutloos.",
-    "noClock": "Er loopt geen tijd. Je kunt later vandaag gewoon verder."
+    "quick": "Sneller invullen: houd een vakje ingedrukt, schuif naar een cijfer of zwart en laat los."
   },
   "done": {
     "flawless": "Foutloos",

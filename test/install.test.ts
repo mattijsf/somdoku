@@ -1,5 +1,5 @@
-// What a phone needs to install the game as an app: a manifest the page points to, with icons
-// that exist and are the size they say.
+// What a phone needs to install the game as an app, and how it looks: a manifest the page points
+// to, icons that exist and are the size they say, and one set of icons.
 import { describe, expect, it } from "vitest"
 import { read, readBytes, sources } from "./files"
 
@@ -45,6 +45,18 @@ describe("the installable app", () => {
       'navigator.serviceWorker.register("./sw.js")'
     )
     expect(read("src/sw.ts").length).toBeGreaterThan(0)
+  })
+})
+
+describe("the look", () => {
+  it("draws every icon from one set, Lucide: no emoji, no loose glyphs, no drawn svg", () => {
+    const page = [read("index.html"), read("src/style.css"), ...sources().map(([, text]) => text)]
+    const shared = read("src/lib/game.ts") // the share text is text, for WhatsApp: emoji belong there
+    for (const source of page.filter(text => text !== shared)) {
+      expect(source).not.toMatch(/[\u2700-\u27BF\u{1F000}-\u{1FAFF}]/u) // dingbats and emoji
+      expect(source).not.toMatch(/<svg/)
+    }
+    expect(sources().some(([, text]) => text.includes('from "lucide-react"'))).toBe(true)
   })
 })
 
