@@ -1,4 +1,4 @@
-// The game as a player meets it: filling in, solving, the score and sharing.
+// The game as a player meets it: the start, filling in, solving and sharing.
 import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { App } from "../src/app/App"
@@ -34,6 +34,7 @@ beforeEach(async () => {
   useGameStore.setState({
     ...freshGame(),
     selected: null,
+    justFilled: null,
     tapped: null,
     revealing: false,
     showResult: false,
@@ -45,20 +46,29 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
+describe("the start", () => {
+  it("starts on a button with the sums covered", () => {
+    render(<App />)
+    expect(view()).toBe("ready")
+    expect(screen.getByRole("button", { name: "Start" })).toBeTruthy()
+    expect(screen.getByText("The sums appear when you start.")).toBeTruthy()
+  })
+
+  it("shows the sums after Start, and keeps the game on the device", () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole("button", { name: "Start" }))
+    expect(view()).toBe("play")
+    expect(document.querySelectorAll(".cell")).toHaveLength(n * n)
+    expect(JSON.parse(localStorage.getItem(`somdoku:${day}`) ?? "{}")).toMatchObject({
+      started: true,
+    })
+  })
+})
+
 describe("filling in", () => {
   beforeEach(() => {
     render(<App />)
-  })
-
-  it("shows the puzzle, and keeps the game on the device", () => {
-    expect(view()).toBe("play")
-    expect(document.querySelectorAll(".cell")).toHaveLength(n * n)
-    fill(0, 3)
-    expect(JSON.parse(localStorage.getItem(`somdoku:${day}`) ?? "{}")).toMatchObject({
-      cells: [3, ...new Array<null>(n * n - 1).fill(EMPTY)],
-      trail: { order: [0], edits: 0 },
-      finished: false,
-    })
+    fireEvent.click(screen.getByRole("button", { name: "Start" }))
   })
 
   it("puts a digit in the chosen cell, and the same key again empties it", () => {
@@ -79,18 +89,15 @@ describe("filling in", () => {
     expect(document.querySelector("#check")).toBeNull()
   })
 
-  it("points out a digit that is in a line twice", () => {
+  it("points out a digit twice in a line, and a black cell too many", () => {
     fill(0, 2)
     fill(1, 2)
     expect(cell(0).className).toContain("double")
     expect(cell(1).className).toContain("double")
-  })
-
-  it("points out a black cell too many in a line", () => {
-    fill(0, BLACK)
-    fill(1, BLACK)
-    expect(cell(0).className).toContain("double")
-    expect(cell(1).className).toContain("double")
+    expect(cell(2).className).not.toContain("double")
+    fill(n, BLACK)
+    fill(2 * n, BLACK)
+    expect(cell(2 * n).className).toContain("double")
   })
 
   it("takes digits, black and arrows from the keyboard", () => {
@@ -114,14 +121,13 @@ describe("filling in", () => {
     expect(screen.getByText(`${n * n - 1} cells still empty.`)).toBeTruthy()
   })
 
-  it("counts taking something back, and filling an empty cell is free", () => {
+  it("does not count a slip put right at once as a change", () => {
     fill(0, 1)
-    fill(1, 2)
-    expect(useGameStore.getState().trail.edits).toBe(0)
+    fireEvent.click(keyFor(2))
+    expect(useGameStore.getState().trail).toMatchObject({ edits: 0, order: [0] })
+    fill(1, 1)
     fill(0, 3)
     expect(useGameStore.getState().trail.edits).toBe(1)
-    expect(screen.getByRole("img", { name: "1 change" })).toBeTruthy()
-    expect(document.querySelector("#count")?.textContent).toBe("1")
   })
 })
 
@@ -129,6 +135,7 @@ describe("holding a cell", () => {
   beforeEach(() => {
     vi.useFakeTimers()
     render(<App />)
+    fireEvent.click(screen.getByRole("button", { name: "Start" }))
   })
 
   // the click that may follow letting go is swallowed, until the next tick
@@ -144,6 +151,7 @@ describe("holding a cell", () => {
       vi.advanceTimersByTime(400)
     })
   }
+
   const picker = (): HTMLElement | null => document.querySelector<HTMLElement>(".picker")
 
   it("brings up the values above it: let go on one to fill it in", () => {
@@ -187,6 +195,9 @@ describe("keeping the game", () => {
     // one with checks, from before the score was the number of changes
     localStorage.setItem(`somdoku:${day}`, JSON.stringify({ ...kept, checks: [] }))
     expect(loadGame().cells[0]).toBe(EMPTY)
+    // one without a clock, from before the score was the time
+    localStorage.setItem(`somdoku:${day}`, JSON.stringify({ ...kept, active: undefined }))
+    expect(loadGame().cells[0]).toBe(EMPTY)
   })
 })
 
@@ -196,6 +207,7 @@ describe("the end", () => {
     const writeText = vi.fn(() => Promise.resolve())
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } })
     render(<App />)
+    fireEvent.click(screen.getByRole("button", { name: "Start" }))
     solution.forEach((value, i) => fill(i, value))
     expect(useGameStore.getState().finished).toBe(true)
     expect(view()).toBe("play") // the solved grid first, row by row
@@ -203,10 +215,10 @@ describe("the end", () => {
       vi.advanceTimersByTime(2000)
     })
     expect(view()).toBe("done")
-    expect(screen.getByRole("heading", { level: 1, name: "Flawless" })).toBeTruthy()
+    expect(screen.getByRole("heading", { level: 1, name: /^Solved in \d+:\d\d$/ })).toBeTruthy()
     expect(
       screen.getByRole("img", {
-        name: /^Somdoku \d+ ✏️0\. 25 cells in one go, 0 changed later\.$/u,
+        name: /^Somdoku \d+ · \d+:\d\d\. 25 cells in one go, 0 changed later\.$/u,
       })
     ).toBeTruthy()
 
@@ -215,19 +227,8 @@ describe("the end", () => {
       await vi.advanceTimersByTimeAsync(100)
     })
     const [[shared]] = writeText.mock.calls as unknown as [[string]]
-    expect(shared).toMatch(/^Somdoku \d+ ✏️0\n(🟩{5}\n){4}🟩{5}$/u) // no address while trying it out here
+    expect(shared).toMatch(/^Somdoku \d+ · \d+:\d\d\n(🟩{5}\n){4}🟩{5}$/u)
     expect(screen.getByRole("button", { name: "Copied" })).toBeTruthy()
-  })
-
-  it("says how many changes it took", () => {
-    vi.useFakeTimers()
-    render(<App />)
-    fill(0, solution[0] === 1 ? 2 : 1)
-    solution.forEach((value, i) => fill(i, value))
-    act(() => {
-      vi.advanceTimersByTime(2000)
-    })
-    expect(screen.getByRole("heading", { level: 1, name: "Right, with 1 change" })).toBeTruthy()
   })
 })
 
@@ -236,7 +237,7 @@ describe("in Dutch", () => {
     await i18n.changeLanguage("nl")
     render(<App />)
     expect(document.documentElement.lang).toBe("nl")
-    expect(screen.getByRole("img", { name: "0 wijzigingen" })).toBeTruthy()
-    expect(screen.getByText("Tik een vakje, of houd het ingedrukt.")).toBeTruthy()
+    expect(screen.getByRole("button", { name: "Uitleg" })).toBeTruthy()
+    expect(screen.getByText("De sommen verschijnen als je start.")).toBeTruthy()
   })
 })

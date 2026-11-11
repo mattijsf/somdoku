@@ -1,9 +1,12 @@
 {
-  "edits_one": "{{count}} change",
-  "edits_other": "{{count}} changes",
+  "solvedIn": "Solved in {{time}}",
   "top": {
     "home": "Somdoku, to today's puzzle",
-    "help": "How to play"
+    "help": "How to play",
+    "filled": "{{filled}} of {{total}} cells filled in"
+  },
+  "ready": {
+    "start": "Start"
   },
   "board": {
     "label": "Puzzle",
@@ -19,6 +22,7 @@
     "erase": "Clear"
   },
   "note": {
+    "covered": "The sums appear when you start.",
     "start": "Tap a cell, or hold it.",
     "open_one": "{{count}} cell still empty.",
     "open_other": "{{count}} cells still empty.",
@@ -33,13 +37,11 @@
     "sums": "The numbers along the edge are the sums of the groups of digits that touch, in order. A black cell splits two groups.",
     "example": "Here the {{k}} stands alone, and {{parts}} = {{sum}}.",
     "solved": "Once everything is right, the puzzle is done by itself. Every step can be worked out, and you add up the sums yourself.",
-    "score": "Your score is the number of <b>changes</b>: every time you alter or clear a digit or a black cell. Zero is flawless.",
+    "score": "Your score is your <b>time</b>. The clock runs from Start and only while the game is open; you only see it afterwards. Putting it away and going on later costs nothing.",
+    "changed": "In the picture you share, a cell is yellow if you changed it later.",
     "quick": "Fill in faster: hold a cell, slide to a digit or black, and let go."
   },
   "done": {
-    "flawless": "Flawless",
-    "withEdits_one": "Right, with {{count}} change",
-    "withEdits_other": "Right, with {{count}} changes",
     "result": "{{head}}. {{first}} cells in one go, {{later}} changed later.",
     "share": "Share",
     "copied": "Copied",

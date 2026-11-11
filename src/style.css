@@ -81,8 +81,15 @@ body[data-view="done"] #play{flex:none}
 .round:active::before{transform:translateY(1px);box-shadow:0 1px 0 var(--edge)}
 
 /* one screen at a time */
-body[data-view="play"] #done,
-body[data-view="done"] .pad, body[data-view="done"] .note{display:none}
+body[data-view="ready"] #done, body[data-view="play"] #done,
+body[data-view="ready"] .pad, body[data-view="done"] .pad, body[data-view="done"] .note,
+body[data-view="play"] .actions, body[data-view="done"] .actions{display:none}
+/* Before Start the sums are covered: looking at them is playing, and playing is on the clock.
+   The Start button takes the room of the keys, so nothing moves when the game begins. */
+body[data-view="ready"] .clue span{visibility:hidden}
+.actions{display:grid;align-content:center;margin-top:12px;min-height:calc(2 * var(--keyh) + 8px)}
+/* the time is the score, but only shown when the game is over */
+body:not([data-view="done"]) .count{display:none}
 
 /* the puzzle: sums on top and on the left, tiles in between */
 .board{display:grid;grid-template-columns:auto repeat(var(--n),minmax(0,var(--cap)));gap:clamp(3px,calc((8 - var(--n)) * 1.65px),5px);justify-content:center;

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   EMPTY,
   LEVELS,
+  clock,
   dailyPuzzle,
   doubles,
   freshTrail,
@@ -180,7 +181,13 @@ describe("a game", () => {
     expect([EMPTY, 0, 3].map(isFilled)).toEqual([false, true, true])
   })
 
-  it("fills a cell for free, and counts taking something back", () => {
+  it("writes the time as a clock", () => {
+    expect(clock(0)).toBe("0:00")
+    expect(clock(222.9)).toBe("3:42")
+    expect(clock(3767)).toBe("1:02:47")
+  })
+
+  it("remembers the order of filling, and what was taken back later", () => {
     const trail = freshTrail(4)
     noteMove(trail, 0, EMPTY, 3) // filled in
     noteMove(trail, 1, EMPTY, 2)
@@ -194,20 +201,36 @@ describe("a game", () => {
     expect(trail).toMatchObject({ edits: 2, order: [0, 1, 2], changed: [true, false, true, false] })
   })
 
-  it("shares the score with a timeline: a square per cell in the order they were filled", () => {
+  it("does not call a slip of the finger a change", () => {
+    const trail = freshTrail(4)
+    noteMove(trail, 0, EMPTY, 3)
+    noteMove(trail, 0, 3, 2, true) // put right at once, before another cell was touched
+    expect(trail).toMatchObject({ edits: 0, order: [0], changed: [false, false, false, false] })
+    noteMove(trail, 1, EMPTY, 1)
+    noteMove(trail, 0, 2, 4) // coming back to it later is a change
+    expect(trail).toMatchObject({ edits: 1, changed: [true, false, false, false] })
+  })
+
+  it("shares the time with a timeline: a square per cell in the order they were filled", () => {
     const trail = freshTrail(4)
     ;[2, 0, 3, 1].forEach(cell => noteMove(trail, cell, EMPTY, 1)) // filled in this order
     noteMove(trail, 0, 1, 2) // the second one filled was altered later
     expect(marks(trail)).toEqual(["g", "y", "g", "g"])
-    expect(shareText({ name: "Somdoku 12", trail, n: 2 })).toBe("Somdoku 12 ✏️1\n🟩🟨\n🟩🟩")
+    expect(shareText({ name: "Somdoku 12", seconds: 222, trail, n: 2 })).toBe(
+      "Somdoku 12 · 3:42\n🟩🟨\n🟩🟩"
+    )
     expect(
-      shareText({ name: "Somdoku 12", trail, n: 2, url: "https://x.nl/" }).split("\n").at(-1)
+      shareText({ name: "Somdoku 12", seconds: 222, trail, n: 2, url: "https://x.nl/" })
+        .split("\n")
+        .at(-1)
     ).toBe("https://x.nl/")
   })
 
-  it("shows a flawless game as nothing but green", () => {
+  it("shows a game without a change as nothing but green", () => {
     const trail = freshTrail(4)
     ;[0, 1, 2, 3].forEach(cell => noteMove(trail, cell, EMPTY, 1))
-    expect(shareText({ name: "Somdoku 1", trail, n: 2 })).toBe("Somdoku 1 ✏️0\n🟩🟩\n🟩🟩")
+    expect(shareText({ name: "Somdoku 1", seconds: 59, trail, n: 2 })).toBe(
+      "Somdoku 1 · 0:59\n🟩🟩\n🟩🟩"
+    )
   })
 })

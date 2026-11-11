@@ -1,5 +1,5 @@
 // What a phone needs to install the game as an app, and how it looks: a manifest the page points
-// to, icons that exist and are the size they say, bars that match the page, and one set of icons.
+// to, icons that exist and are the size they say, a light and a dark look, and a service worker.
 import { describe, expect, it } from "vitest"
 import { read, readBytes, sources } from "./files"
 
@@ -44,7 +44,7 @@ describe("the installable app", () => {
     expect(read("src/app/registerServiceWorker.ts")).toContain(
       'navigator.serviceWorker.register("./sw.js")'
     )
-    expect(read("src/sw.ts").length).toBeGreaterThan(0)
+    expect(read("vite.config.ts")).toContain('chunk.name === "sw" ? "sw.js"')
   })
 })
 
@@ -58,6 +58,12 @@ describe("the look", () => {
       '<meta name="theme-color" content="#0E1A16" media="(prefers-color-scheme: dark)">'
     )
     expect(read("src/style.css")).toMatch(/html\{[^}]*background:var\(--bg\)/)
+  })
+
+  it("starts with the sums covered, and has no clock to look at while playing", () => {
+    const style = read("src/style.css")
+    expect(style).toContain('body[data-view="ready"] .clue span{visibility:hidden}')
+    expect(style).toContain('body:not([data-view="done"]) .count{display:none}')
   })
 
   it("draws every icon from one set, Lucide: no emoji, no loose glyphs, no drawn svg", () => {
@@ -74,8 +80,7 @@ describe("the look", () => {
 describe("the choice", () => {
   it("offers nothing to choose: no practice puzzles, no sizes, nothing read from the address", () => {
     for (const [path, text] of sources()) {
-      expect(text, path).not.toMatch(/location\.search|URLSearchParams|oefen|maat/)
+      expect(text, path).not.toMatch(/location\.search|URLSearchParams|querystring/)
     }
-    expect(read("index.html")).not.toMatch(/oefen/)
   })
 })

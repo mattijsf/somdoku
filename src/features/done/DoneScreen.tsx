@@ -2,23 +2,24 @@ import { useEffect, useRef, useState, type ReactElement } from "react"
 import { flushSync } from "react-dom"
 import { useTranslation } from "react-i18next"
 import { at } from "../../lib/at"
-import { marks, shareText } from "../../lib/game"
+import { clock, marks, shareText } from "../../lib/game"
 import { n, name } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
 import { ShareBubble } from "./ShareBubble"
 import { shareScore } from "./shareScore"
 
-/** The result: the score, the timeline as it will be shared, and the button to share it. */
+/** The result: the time, the timeline as it will be shared, and the button to share it. */
 export function DoneScreen(): ReactElement {
   const { t } = useTranslation()
   const finished = useGameStore(game => game.finished)
+  const active = useGameStore(game => game.active)
   const trail = useGameStore(game => game.trail)
   const result = useRef<HTMLPreElement>(null)
   const [copyByHand, setCopyByHand] = useState(false) // the clipboard said no: the text is shown to copy
   const [said, setSaid] = useState<"share" | "copied" | "copyAbove">("share") // what the share button says
 
-  const { edits } = trail
-  const text = shareText({ name, trail, n })
+  const seconds = active / 1000
+  const text = shareText({ name, seconds, trail, n })
   const timeline = marks(trail)
 
   useEffect(() => {
@@ -52,9 +53,7 @@ export function DoneScreen(): ReactElement {
     <section id="done" className="card">
       {finished && (
         <>
-          <h1 id="done-title">
-            {edits === 0 ? t("done.flawless") : t("done.withEdits", { count: edits })}
-          </h1>
+          <h1 id="done-title">{t("solvedIn", { time: clock(seconds) })}</h1>
           <ShareBubble head={at(text.split("\n"), 0)} trail={timeline} />
           <pre ref={result} id="result" className="result" hidden={!copyByHand}>
             {text}

@@ -22,7 +22,7 @@ files plus `tsc -b`, and commitlint on the message (Conventional Commits); on pu
   generator changes every day.
 - `src/stores/`: zustand stores for the game and the UI. The game is kept in `localStorage`.
 - `src/features/`: the screens (`play`, `done`), the top bar and the rules.
-- `src/hooks/`, `src/utils/`: shared pieces, the keyboard, the change of day and storage.
+- `src/hooks/`, `src/utils/`: shared pieces, the clock and keyboard.
 - `src/locales/`: English and Dutch translations (react-i18next).
 - `src/sw.ts`: the service worker, so the game installs as an app and works offline.
 - `functions/_middleware.ts`: sends www.somdoku.nl and somdoku.pages.dev on to somdoku.nl.

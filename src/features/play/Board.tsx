@@ -1,5 +1,6 @@
 import { Fragment, type CSSProperties, type ReactElement } from "react"
 import { useTranslation } from "react-i18next"
+import { at } from "../../lib/at"
 import { doubles, isFilled, spare, type Value } from "../../lib/game"
 import { BLACK } from "../../lib/puzzle"
 import { blacks, n, puzzle, rowOf } from "../../stores/today"
@@ -29,13 +30,9 @@ function ClueLine({ clue, className, style }: ClueLineProps): ReactElement {
 const classes = (...names: (string | false | null | undefined)[]): string =>
   names.filter(Boolean).join(" ")
 
-/** What breaks a rule in plain sight: a digit twice in a line, or more black cells than a line gets. */
-const wrongIn = (line: readonly Value[]): Set<number> =>
-  new Set([...doubles(line), ...spare(line, blacks)])
-
 /**
- * The grid with the sums beside it. A digit twice in a row or column, or a black cell too many,
- * turns red.
+ * The grid with the sums beside it. What breaks a rule in plain sight shows in red: a digit twice
+ * in a line, or more black cells than a line gets.
  */
 export function Board(): ReactElement {
   const { t } = useTranslation()
@@ -54,9 +51,11 @@ export function Board(): ReactElement {
   }
   const inLine = (r: number, c: number): boolean =>
     selected !== null && (rowOf(selected) === r || selected % n === c)
-  const rowWrong = Array.from({ length: n }, (_, r) => wrongIn(cells.slice(r * n, r * n + n)))
-  const colWrong = Array.from({ length: n }, (_, c) =>
-    wrongIn(Array.from({ length: n }, (__, r) => cells[r * n + c] ?? null))
+  const wrongIn = (line: readonly Value[]): Set<number> =>
+    new Set([...doubles(line), ...spare(line, blacks)])
+  const rowDoubles = Array.from({ length: n }, (_, r) => wrongIn(cells.slice(r * n, r * n + n)))
+  const colDoubles = Array.from({ length: n }, (_, c) =>
+    wrongIn(Array.from({ length: n }, (__, r) => at(cells, r * n + c)))
   )
 
   return (
@@ -94,7 +93,6 @@ export function Board(): ReactElement {
             const i = r * n + c
             const value = cells[i] ?? null
             const digit = isFilled(value) && value > 0
-            const wrong = Boolean(rowWrong[r]?.has(c)) || Boolean(colWrong[c]?.has(r))
             return (
               <button
                 key={c}
@@ -108,7 +106,7 @@ export function Board(): ReactElement {
                   i === selected ? "sel" : inLine(r, c) && "near",
                   revealing && "pop",
                   i === tapped && "tap",
-                  wrong && "double"
+                  (at(rowDoubles, r).has(c) || at(colDoubles, c).has(r)) && "double"
                 )}
                 aria-label={t("board.cell", { row: r + 1, col: c + 1, value: says(value) })}
                 onPointerDown={event => holdCell(event, i)}

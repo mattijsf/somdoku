@@ -1,6 +1,7 @@
-// The game so far. Kept on the device: there is no clock, so it can be finished later today.
-// `sums` says which puzzle it was played on: when the puzzle of a day changes, as it may while
-// the game is still being made, a game kept from the earlier one is dropped.
+// The game so far. Kept on the device, so it can be put away and finished later today: only the
+// time it is on screen counts. `sums` says which puzzle it was played on: when the puzzle of a
+// day changes, as it may while the game is still being made, a game kept from the earlier one
+// is dropped.
 import { EMPTY, freshTrail, type Trail, type Value } from "../lib/game"
 import { isRecord, kept, store } from "../utils/storage"
 import { day, k, n, puzzle } from "./today"
@@ -9,16 +10,20 @@ export interface Game {
   sums: string
   cells: Value[]
   trail: Trail
+  started: boolean
+  active: number
   finished: boolean
 }
 
-const storeKey = `somdoku:${day}`
+const storeKey = (someDay: string): string => `somdoku:${someDay}`
 const sums = JSON.stringify([puzzle.rows, puzzle.cols])
 
 export const freshGame = (): Game => ({
   sums,
   cells: new Array<Value>(n * n).fill(EMPTY),
-  trail: freshTrail(n * n), // how it went: the order of filling, what was altered, the score
+  trail: freshTrail(n * n), // how it went: the order of filling and what was altered later
+  started: false, // the sums stay covered until Start: looking at them is playing
+  active: 0, // ms played so far, the score
   finished: false,
 })
 
@@ -47,28 +52,31 @@ function keptTrail(trail: unknown): Trail | null {
   return { order, changed, edits }
 }
 
-/** The game as kept on this device, or a fresh one. */
+/** Today's game as kept on this device, or a fresh one. */
 export function loadGame(): Game {
   try {
-    const saved = kept(storeKey)
+    const saved = kept(storeKey(day))
     if (!isRecord(saved)) {
       return freshGame()
     }
-    const { cells, checks } = saved
+    const { cells, active, checks } = saved
     const trail = keptTrail(saved.trail)
-    // a game kept by an earlier version of the game (with checks, or with notes in cells) is dropped too
+    // a game kept by an earlier version of the game (with checks, notes in cells, or no clock) is dropped too
     if (
       saved.sums === sums &&
       Array.isArray(cells) &&
       cells.length === n * n &&
       cells.every(fits) &&
       trail &&
-      !checks
+      !checks &&
+      typeof active === "number"
     ) {
       return {
         sums,
         cells,
         trail,
+        active,
+        started: saved.started === true,
         finished: saved.finished === true,
       }
     }
@@ -78,7 +86,7 @@ export function loadGame(): Game {
   return freshGame()
 }
 
-export function saveGame({ sums: played, cells, trail, finished }: Game): void {
-  const game: Game = { sums: played, cells, trail, finished }
-  store(storeKey, JSON.stringify(game))
+export function saveGame({ sums: played, cells, trail, started, active, finished }: Game): void {
+  const game: Game = { sums: played, cells, trail, started, active, finished }
+  store(storeKey(day), JSON.stringify(game))
 }
