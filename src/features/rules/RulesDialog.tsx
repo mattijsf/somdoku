@@ -20,9 +20,19 @@ export function RulesDialog(): ReactElement {
   }, [open])
 
   return (
-    <dialog ref={dialog} id="rules-dialog" onClose={closeRules}>
+    <dialog
+      ref={dialog}
+      id="rules-dialog"
+      aria-labelledby="rules-title"
+      onClose={closeRules}
+      onClick={event => {
+        if (event.target === event.currentTarget) {
+          closeRules() // a tap beside the card
+        }
+      }}
+    >
       <div className="card">
-        <h2>{t("rules.title")}</h2>
+        <h2 id="rules-title">{t("rules.title")}</h2>
         <div className="rules">
           <Rules />
         </div>

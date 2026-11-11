@@ -1,0 +1,51 @@
+<!doctype html>
+<!-- The picture WhatsApp shows with the link (public/og.png, 1200 x 630). To make it again:
+     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+       --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=4000 \
+       --screenshot=public/og.png art/og.html -->
+<meta charset="utf-8">
+<style>
+  @font-face{font-family:B;font-weight:200 800;src:url("../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2") format("woff2-variations")}
+  *{box-sizing:border-box;margin:0}
+  body{width:1200px;height:630px;overflow:hidden;background:#EDF1EC;color:#15231D;font-family:B,sans-serif;font-variant-numeric:tabular-nums;
+    display:grid;grid-template-columns:1fr auto;align-items:center;padding:0 76px 0 84px}
+  .mark{display:grid;grid-template-columns:repeat(2,44px);gap:7px;margin-bottom:26px}
+  .mark i{height:44px;border-radius:11px;background:#fff;box-shadow:0 4px 0 #BDCAC1;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:30px}
+  .mark i.b{background:#15231D;box-shadow:0 4px 0 #000}
+  h1{font-size:106px;line-height:1;font-weight:800;letter-spacing:-.03em}
+  p{margin-top:18px;font-size:37px;line-height:1.2;font-weight:600;color:#5A6A62}
+  .bubble{display:inline-grid;gap:6px;margin-top:38px;padding:18px 26px 24px;background:#D3F0DC;border-radius:30px 30px 30px 8px}
+  .bubble b{font-size:30px;font-weight:650;margin-bottom:4px}
+  .bubble span{display:flex;gap:6px}
+  .bubble i{width:34px;height:34px;border-radius:7px;background:#2E9B5F}
+  .bubble i.x{background:#15231D}
+  .board{display:grid;grid-template-columns:auto repeat(5,80px);gap:9px;font-weight:800}
+  .clue{display:flex;font-size:28px;font-weight:750}
+  .clue.col{flex-direction:column;justify-content:flex-end;align-items:center;line-height:1.25;padding-bottom:6px}
+  .clue.row{justify-content:flex-end;align-items:center;gap:.5em;padding-right:12px}
+  .clue.ok{color:#2E9B5F}
+  .cell{height:80px;border-radius:15px;background:#fff;box-shadow:0 4px 0 #BDCAC1;display:grid;place-items:center;font-size:46px;line-height:1}
+  .cell.ok{background:#CFEBD9;box-shadow:none}
+  .cell.b{background:#15231D;box-shadow:0 4px 0 #000}
+  .cell.b.ok{box-shadow:inset 0 0 0 5px #1D6B40}
+  .cell.sel{box-shadow:0 0 0 5px #2E9B5F}
+</style>
+<div>
+  <div class="mark"><i>4</i><i class="b"></i><i class="b"></i><i>1</i></div>
+  <h1>Somdoku</h1>
+  <p>Daily Japanese sums</p>
+  <div class="bubble"><b>Somdoku 12 3/6</b>
+    <span><i></i><i class="x"></i><i class="x"></i><i></i><i class="x"></i></span>
+    <span><i></i><i></i><i class="x"></i><i></i><i></i></span>
+    <span><i></i><i></i><i></i><i></i><i></i></span>
+  </div>
+</div>
+<div class="board">
+  <div></div>
+  <div class="clue col"><span>15</span></div><div class="clue col"><span>4</span><span>5</span></div><div class="clue col"><span>9</span></div><div class="clue col"><span>14</span></div><div class="clue col"><span>3</span><span>4</span></div>
+  <div class="clue row ok"><span>14</span></div><div class="cell ok">5</div><div class="cell ok">4</div><div class="cell ok">3</div><div class="cell ok">2</div><div class="cell b ok"></div>
+  <div class="clue row ok"><span>3</span><span>7</span></div><div class="cell ok">3</div><div class="cell b ok"></div><div class="cell ok">1</div><div class="cell ok">4</div><div class="cell ok">2</div>
+  <div class="clue row"><span>4</span><span>9</span></div><div class="cell">4</div><div class="cell b"></div><div class="cell">5</div><div class="cell sel"></div><div class="cell"></div>
+  <div class="clue row"><span>2</span><span>5</span></div><div class="cell">2</div><div class="cell b"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+  <div class="clue row"><span>6</span><span>4</span></div><div class="cell">1</div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+</div>

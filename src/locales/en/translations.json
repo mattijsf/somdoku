@@ -17,15 +17,17 @@
   "keys": {
     "label": "Fill in",
     "digit": "Digit {{digit}}",
+    "black": "Black",
     "blackCell": "Black cell",
     "note": "Note: a digit goes here, not known yet which",
+    "noteCap": "Digit?",
     "erase": "Clear"
   },
   "play": {
-    "check": "Check",
-    "history": "Earlier checks"
+    "check": "Check"
   },
   "note": {
+    "start": "Tap a cell, then a digit or black.",
     "open_one": "{{count}} cell still empty.",
     "open_other": "{{count}} cells still empty.",
     "redRows": "The red rows aren't right yet.",
@@ -36,10 +38,10 @@
     "begin": "Start",
     "fill": "Fill every cell with a digit from 1 to {{k}}, or make it black.",
     "once": "A digit appears at most once in a row or column.",
-    "sums": "The numbers beside a row and above a column are the sums of the groups of digits that touch, in order. A black cell splits two groups.",
+    "sums": "The numbers along the edge are the sums of the groups of digits that touch, in order. A black cell splits two groups.",
     "example": "Here the 4 stands alone, and 1 + 5 = 6.",
     "check": "All filled in? Tap <b>Check</b>. You see for each row whether it is right; right rows stay as they are. You may check {{max}} times.",
-    "note": "The ring is a note: a digit goes here, you don't know which yet.",
+    "note": "<b>Digit?</b> is a note: a digit goes here, you don't know which yet.",
     "noClock": "There is no clock. You can simply carry on later today."
   },
   "done": {
@@ -47,6 +49,8 @@
     "firstCheck": "Right first time",
     "checks": "Right in {{used}} checks",
     "solution": "The solution is above; red is what you had differently.",
+    "result": "{{head}}. {{lines}}.",
+    "rowsRight": "{{right}} of {{total}} rows right",
     "share": "Share",
     "copied": "Copied",
     "copyAbove": "Copy the text above",

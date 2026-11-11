@@ -17,15 +17,17 @@
   "keys": {
     "label": "Invullen",
     "digit": "Cijfer {{digit}}",
+    "black": "Zwart",
     "blackCell": "Zwart vakje",
     "note": "Aantekening: hier komt een cijfer, nog onbekend welk",
+    "noteCap": "Cijfer?",
     "erase": "Wis"
   },
   "play": {
-    "check": "Controleer",
-    "history": "Eerdere controles"
+    "check": "Controleer"
   },
   "note": {
+    "start": "Tik een vakje, en dan een cijfer of zwart.",
     "open_one": "Nog {{count}} vakje leeg.",
     "open_other": "Nog {{count}} vakjes leeg.",
     "redRows": "De rode rijen kloppen nog niet.",
@@ -36,10 +38,10 @@
     "begin": "Begin",
     "fill": "Vul elk vakje met een cijfer van 1 tot en met {{k}}, of maak het zwart.",
     "once": "In een rij of kolom staat elk cijfer hooguit één keer.",
-    "sums": "De getallen naast een rij en boven een kolom zijn de sommen van de groepjes cijfers die aan elkaar vastzitten, in volgorde. Een zwart vakje scheidt twee groepjes.",
+    "sums": "De getallen aan de rand zijn de sommen van de groepjes cijfers die aan elkaar vastzitten, in volgorde. Een zwart vakje scheidt twee groepjes.",
     "example": "Hier staat de 4 alleen, en 1 + 5 = 6.",
     "check": "Alles ingevuld? Tik <b>Controleer</b>. Je ziet per rij of die goed is; goede rijen blijven staan. Je mag {{max}} keer controleren.",
-    "note": "Het rondje is een aantekening: hier komt een cijfer, je weet nog niet welk.",
+    "note": "<b>Cijfer?</b> is een aantekening: hier komt een cijfer, je weet nog niet welk.",
     "noClock": "Er loopt geen tijd. Je kunt later vandaag gewoon verder."
   },
   "done": {
@@ -47,6 +49,8 @@
     "firstCheck": "In één keer goed",
     "checks": "Goed in {{used}} controles",
     "solution": "Hierboven staat de oplossing; rood is wat jij anders had.",
+    "result": "{{head}}. {{lines}}.",
+    "rowsRight": "{{right}} van {{total}} rijen goed",
     "share": "Deel",
     "copied": "Gekopieerd",
     "copyAbove": "Kopieer de tekst hierboven",

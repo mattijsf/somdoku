@@ -1,7 +1,6 @@
 import type { ReactElement } from "react"
 import { Actions } from "./Actions"
 import { Board } from "./Board"
-import { History } from "./History"
 import { Keypad } from "./Keypad"
 import { Note } from "./Note"
 
@@ -9,11 +8,12 @@ import { Note } from "./Note"
 export function PlayScreen(): ReactElement {
   return (
     <section id="play">
-      <Board />
+      <div className="stage">
+        <Board />
+      </div>
       <Keypad />
       <Actions />
       <Note />
-      <History />
     </section>
   )
 }

@@ -31,7 +31,13 @@ function fill(i: number, value: number): void {
 beforeEach(async () => {
   localStorage.clear()
   await i18n.changeLanguage("en")
-  useGameStore.setState({ ...freshGame(), selected: null })
+  useGameStore.setState({
+    ...freshGame(),
+    selected: null,
+    reveal: null,
+    tapped: null,
+    showResult: false,
+  })
   useUiStore.setState({ rulesOpen: false })
 })
 
@@ -98,6 +104,7 @@ describe("filling in", () => {
   })
 
   it("says how many cells are still empty, and checks only once all are filled in", () => {
+    expect(screen.getByText("Tap a cell, then a digit or black.")).toBeTruthy()
     fill(0, 1)
     expect(screen.getByText(`${n * n - 1} cells still empty.`)).toBeTruthy()
     expect(screen.getByRole<HTMLButtonElement>("button", { name: "Check" }).disabled).toBe(true)
@@ -116,7 +123,8 @@ describe("checking", () => {
     expect(useGameStore.getState().checks).toEqual([
       [wrong[0] === solution[0], ...new Array<boolean>(n - 1).fill(true)],
     ])
-    expect(screen.getByLabelText("1 of 6 checks used").textContent).toBe("1/6")
+    expect(screen.getByRole("img", { name: "1 of 6 checks used" }).textContent).toBe("1/6")
+    expect(document.querySelectorAll("#tally .g")).toHaveLength(n - 1) // the score picture grows
     expect(cell(n).className).toContain("ok")
     // a right row stays as it is
     fill(n, solution[n] === 1 ? 2 : 1)
@@ -125,7 +133,7 @@ describe("checking", () => {
     expect(screen.getByRole<HTMLButtonElement>("button", { name: "Check" }).disabled).toBe(true)
   })
 
-  it("is over when every row is right, and copies the score", async () => {
+  it("is over when every row is right, shows the result after the check, and copies the score", async () => {
     vi.useFakeTimers()
     const writeText = vi.fn(() => Promise.resolve())
     Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } })
@@ -133,8 +141,15 @@ describe("checking", () => {
     solution.forEach((value, i) => fill(i, value))
     fireEvent.click(screen.getByRole("button", { name: "Check" }))
     expect(useGameStore.getState().finished).toBe("won")
+    expect(view()).toBe("play") // the check first, row by row
+    act(() => {
+      vi.advanceTimersByTime(2000)
+    })
     expect(view()).toBe("done")
     expect(screen.getByRole("heading", { level: 1, name: "Right first time" })).toBeTruthy()
+    expect(
+      screen.getByRole("img", { name: /^Somdoku \d+ 1\/6\. 5 of 5 rows right\.$/ })
+    ).toBeTruthy()
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Share" }))
@@ -152,6 +167,6 @@ describe("in Dutch", () => {
     render(<App />)
     expect(document.documentElement.lang).toBe("nl")
     expect(screen.getByRole("button", { name: "Controleer" })).toBeTruthy()
-    expect(screen.getByText(`Nog ${n * n} vakjes leeg.`)).toBeTruthy()
+    expect(screen.getByText("Tik een vakje, en dan een cijfer of zwart.")).toBeTruthy()
   })
 })

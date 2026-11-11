@@ -1,21 +1,24 @@
-import { Fragment, type ReactElement } from "react"
+import { Fragment, type CSSProperties, type ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { at } from "../../lib/at"
 import { EMPTY, WHITE, doubles, type Value } from "../../lib/game"
 import { BLACK } from "../../lib/puzzle"
 import { n, puzzle, rowOf, solution } from "../../stores/today"
 import { locked, useGameStore } from "../../stores/useGameStore"
+import { STEP } from "../../utils/motion"
 
-const runs = Math.max(...puzzle.rows.map(clue => clue.length))
+const runs = Math.max(...puzzle.cols.map(clue => clue.length)) // lines of sums above the columns
+const delay = (row: number): string => `${row * STEP}ms`
 
 interface ClueLineProps {
   clue: readonly number[]
   className: string
+  style?: CSSProperties
 }
 
-function ClueLine({ clue, className }: ClueLineProps): ReactElement {
+function ClueLine({ clue, className, style }: ClueLineProps): ReactElement {
   return (
-    <div className={className}>
+    <div className={className} style={style}>
       {clue.map((sum, j) => (
         <span key={j}>{sum}</span>
       ))}
@@ -28,7 +31,7 @@ const classes = (...names: (string | false | null | undefined)[]): string =>
 
 /**
  * The grid with the sums beside it. A digit that is in a line twice turns red; a row that a
- * check found right turns green and stays as it is.
+ * check found right turns green and stays as it is. A check is shown row by row.
  */
 export function Board(): ReactElement {
   const { t } = useTranslation()
@@ -37,6 +40,8 @@ export function Board(): ReactElement {
   const stale = useGameStore(game => game.stale)
   const finished = useGameStore(game => game.finished)
   const selected = useGameStore(game => game.selected)
+  const reveal = useGameStore(game => game.reveal)
+  const tapped = useGameStore(game => game.tapped)
   const select = useGameStore(game => game.select)
 
   const lost = finished === "lost"
@@ -84,8 +89,10 @@ export function Board(): ReactElement {
               "clue row",
               right(r) && "ok",
               last !== undefined && !last[r] && !stale[r] && !finished && "bad",
-              selected !== null && rowOf(selected) === r && "sel"
+              selected !== null && rowOf(selected) === r && "sel",
+              reveal?.[r]
             )}
+            style={{ "--d": delay(r) }}
           />
           {Array.from({ length: n }, (_, c) => {
             const i = r * n + c
@@ -96,6 +103,7 @@ export function Board(): ReactElement {
                 key={c}
                 type="button"
                 data-i={i}
+                style={{ "--d": delay(r) }}
                 className={classes(
                   "cell",
                   value === BLACK && "black",
@@ -103,6 +111,8 @@ export function Board(): ReactElement {
                   right(r) && "ok",
                   lost && cells[i] !== solution[i] && "missed",
                   i === selected ? "sel" : inLine(r, c) && "near",
+                  reveal?.[r],
+                  i === tapped && "tap",
                   // a row known to be right is never the one at fault
                   !right(r) && (at(rowDoubles, r).has(c) || at(colDoubles, c).has(r)) && "double"
                 )}

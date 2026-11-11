@@ -1,23 +1,31 @@
-import { useRef, useState, type ReactElement } from "react"
+import { useEffect, useRef, useState, type ReactElement } from "react"
+import { flushSync } from "react-dom"
 import { useTranslation } from "react-i18next"
 import { usePuzzleName } from "../../hooks/usePuzzleName"
+import { at } from "../../lib/at"
 import { shareText } from "../../lib/game"
 import { practice, size } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
+import { ShareBubble } from "./ShareBubble"
 import { shareScore } from "./shareScore"
 
-/** The result: the checks it took, the score as it will be shared, and another practice puzzle. */
+/** The result: the checks it took, the score drawn as it will be shared, and another practice puzzle. */
 export function DoneScreen(): ReactElement {
   const { t } = useTranslation()
   const finished = useGameStore(game => game.finished)
   const checks = useGameStore(game => game.checks)
   const name = usePuzzleName()
   const result = useRef<HTMLPreElement>(null)
+  const [copyByHand, setCopyByHand] = useState(false) // the clipboard said no: the text is shown to copy
   const [said, setSaid] = useState<"share" | "copied" | "copyAbove">("share") // what the share button says
 
   const won = finished === "won"
   const used = checks.length
   const text = shareText({ name, checks, solved: won })
+
+  useEffect(() => {
+    document.body.style.setProperty("--lines", String(used))
+  }, [used])
 
   let title = t("done.lost")
   if (won) {
@@ -40,10 +48,13 @@ export function DoneScreen(): ReactElement {
     if (shared === "copied") {
       setSaid("copied")
     } else {
+      flushSync(() => {
+        setCopyByHand(true)
+        setSaid("copyAbove")
+      })
       if (result.current) {
         getSelection()?.selectAllChildren(result.current)
       }
-      setSaid("copyAbove")
     }
     setTimeout(() => setSaid("share"), 2500)
   }
@@ -53,7 +64,8 @@ export function DoneScreen(): ReactElement {
       {finished && (
         <>
           <h1 id="done-title">{title}</h1>
-          <pre ref={result} id="result" className="result">
+          <ShareBubble head={at(text.split("\n"), 0)} checks={checks} />
+          <pre ref={result} id="result" className="result" hidden={!copyByHand}>
             {text}
           </pre>
           <button id="share" className="btn primary" type="button" onClick={() => void share()}>
