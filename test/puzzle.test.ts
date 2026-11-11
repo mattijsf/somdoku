@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+  BOOK_RULES_FROM,
   EMPTY,
   MAX_CHECKS,
   WHITE,
@@ -10,8 +11,21 @@ import {
   puzzleNumber,
   rowsRight,
   shareText,
+  spare,
+  type Check,
 } from "../src/lib/game"
-import { clueOf, cluesOf, column, generate, hash, solve } from "../src/lib/puzzle"
+import {
+  clueOf,
+  cluesOf,
+  column,
+  generate,
+  hash,
+  solve,
+  type Grid,
+  type Line,
+} from "../src/lib/puzzle"
+
+const linesOf = (grid: Grid): Line[] => [...grid, ...(grid[0] ?? []).map((_, c) => column(grid, c))]
 
 describe("clues", () => {
   it("sums each group of digits that touch, in order", () => {
@@ -27,32 +41,85 @@ describe("puzzles", () => {
     expect(generate(hash("a")).solution).not.toEqual(generate(hash("b")).solution)
   })
 
-  it("follow the rules and can be solved from the clues alone, for a year of days", () => {
+  it("follow the booklet and can be solved from the clues alone, for a year of days", () => {
     for (let i = 0; i < 365; i++) {
-      const day = new Date(Date.UTC(2026, 10, 11 + i)).toISOString().slice(0, 10)
-      const { n, k, solution, rows, cols } = dailyPuzzle(day)
-      for (const line of [...solution, ...(solution[0] ?? []).map((_, c) => column(solution, c))]) {
-        const digits = line.filter(value => value > 0)
-        expect(new Set(digits).size).toBe(digits.length)
-        expect(digits.length).toBeGreaterThanOrEqual(2)
-        expect(Math.max(...digits)).toBeLessThanOrEqual(k)
+      const day = new Date(Date.UTC(2026, 10, 12 + i)).toISOString().slice(0, 10)
+      const { n, k, blacks, solution, rows, cols } = dailyPuzzle(day)
+      expect([n, k, blacks]).toEqual([5, 4, 1])
+      // every row and column: each of 1, 2, 3, 4 once and one black cell
+      for (const line of linesOf(solution)) {
+        expect([...line].sort()).toEqual([0, 1, 2, 3, 4])
       }
       expect(cluesOf(solution)).toEqual({ rows, cols })
-      expect(solve(n, k, rows, cols)?.grid).toEqual(solution)
+      expect(solve(n, k, rows, cols, blacks)?.grid).toEqual(solution)
     }
   })
 
   it("stay the same from one version to the next", () => {
-    // Puzzle 1 as it went online. If this fails, the generator or the seed changed, and with it
-    // every day's puzzle.
-    const { rows, cols } = dailyPuzzle("2026-11-11")
-    expect(rows).toEqual([[15], [6, 4], [13], [5, 5], [8, 3]])
-    expect(cols).toEqual([[4, 7], [11, 1], [8, 5], [1, 7], [15]])
+    // The first puzzles as they went online. If this fails, the generator or the seed changed,
+    // and with it every day's puzzle. Puzzle 1 is from before the booklet's rules.
+    expect(dailyPuzzle("2026-11-11")).toMatchObject({
+      blacks: null,
+      rows: [[15], [6, 4], [13], [5, 5], [8, 3]],
+      cols: [[4, 7], [11, 1], [8, 5], [1, 7], [15]],
+    })
+    expect(BOOK_RULES_FROM).toBe("2026-11-12")
+    expect(dailyPuzzle("2026-11-12")).toMatchObject({
+      blacks: 1,
+      rows: [[10], [9, 1], [3, 7], [10], [4, 6]],
+      cols: [[10], [10], [6, 4], [4, 6], [8, 2]],
+    })
   })
 
-  it("come in other sizes for practice", () => {
-    for (const n of [4, 5, 6]) {
-      expect(practicePuzzle(1, n).solution).toHaveLength(n)
+  it("have one solution, also when every grid that fits the clues is tried", () => {
+    // Without the solver: every way to fill each row, then the columns checked.
+    const { n, k, rows, cols, solution } = dailyPuzzle("2026-11-12")
+    const same = (a: readonly number[], b: readonly number[]): boolean =>
+      a.length === b.length && a.every((v, i) => v === b[i])
+    const fillings: Line[] = []
+    for (let code = 0; code < (k + 1) ** n; code++) {
+      const line = Array.from({ length: n }, (_, i) => Math.floor(code / (k + 1) ** i) % (k + 1))
+      if (same([...line].sort(), [0, 1, 2, 3, 4])) {
+        fillings.push(line)
+      }
+    }
+    const perRow = rows.map(clue => fillings.filter(line => same(clueOf(line), clue)))
+    const found: Grid[] = []
+    const grid: Grid = []
+    const place = (r: number): void => {
+      if (r < n) {
+        for (const line of perRow[r] ?? []) {
+          grid.push(line)
+          place(r + 1)
+          grid.pop()
+        }
+        return
+      }
+      const columns = (grid[0] ?? []).map((_, c) => column(grid, c))
+      if (
+        columns.every(
+          (col, c) => same([...col].sort(), [0, 1, 2, 3, 4]) && same(clueOf(col), cols[c] ?? [])
+        )
+      ) {
+        found.push(grid.map(row => [...row]))
+      }
+    }
+    place(0)
+    expect(found).toEqual([solution])
+  })
+
+  it("come in other sizes for practice, by the same rules", () => {
+    for (const [n, k, blacks] of [
+      [4, 3, 1],
+      [5, 4, 1],
+      [6, 4, 2],
+    ] as const) {
+      const puzzle = practicePuzzle(1, n)
+      expect(puzzle).toMatchObject({ n, k, blacks })
+      for (const line of linesOf(puzzle.solution)) {
+        expect(line.filter(value => value === 0)).toHaveLength(blacks)
+        expect(new Set(line.filter(value => value > 0)).size).toBe(k)
+      }
     }
   })
 
@@ -66,6 +133,13 @@ describe("a game", () => {
   it("numbers the puzzles from the first day", () => {
     expect(puzzleNumber("2026-11-11")).toBe(1)
     expect(puzzleNumber("2027-03-29")).toBe(139) // across the change to summer time
+  })
+
+  it("points out black cells when a line has more than it gets", () => {
+    expect([...spare([0, 1, 0, 2, 3], 1)].sort()).toEqual([0, 2])
+    expect(spare([0, 1, 4, 2, 3], 1).size).toBe(0)
+    expect(spare([0, 0, 0, EMPTY, WHITE], 2).size).toBe(3)
+    expect(spare([0, 0, 0, 1, 2], null).size).toBe(0) // the first day's rules set no number
   })
 
   it("points out a digit that is in a line twice", () => {
@@ -96,7 +170,7 @@ describe("a game", () => {
     expect(
       shareText({
         name: "Somdoku 12",
-        checks: new Array<boolean[]>(MAX_CHECKS).fill([true, false, false]),
+        checks: new Array<Check>(MAX_CHECKS).fill([true, false, false]),
         solved: false,
       })
     ).toMatch(/^Somdoku 12 X\/6\n(🟩⬛⬛\n){5}🟩⬛⬛$/u)

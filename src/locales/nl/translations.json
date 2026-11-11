@@ -8,6 +8,8 @@
   },
   "board": {
     "label": "Puzzel",
+    "recipe_one": "Cijfers 1 tot en met {{k}}, één zwart vakje per rij en kolom",
+    "recipe_other": "Cijfers 1 tot en met {{k}}, {{count}} zwarte vakjes per rij en kolom",
     "cell": "Rij {{row}}, kolom {{col}}: {{value}}",
     "cellRight": "Rij {{row}}, kolom {{col}}: {{value}}, goed",
     "empty": "leeg",
@@ -38,8 +40,11 @@
     "begin": "Begin",
     "fill": "Vul elk vakje met een cijfer van 1 tot en met {{k}}, of maak het zwart.",
     "once": "In een rij of kolom staat elk cijfer hooguit één keer.",
+    "digits": "In elke rij en in elke kolom staat elk cijfer van 1 tot en met {{k}} precies één keer.",
+    "blacks_one": "In elke rij en in elke kolom is precies één vakje zwart.",
+    "blacks_other": "In elke rij en in elke kolom zijn precies {{count}} vakjes zwart.",
     "sums": "De getallen aan de rand zijn de sommen van de groepjes cijfers die aan elkaar vastzitten, in volgorde. Een zwart vakje scheidt twee groepjes.",
-    "example": "Hier staat de 4 alleen, en 1 + 5 = 6.",
+    "example": "Hier staat de {{k}} alleen, en {{parts}} = {{sum}}.",
     "check": "Alles ingevuld? Tik <b>Controleer</b>. Je ziet per rij of die goed is; goede rijen blijven staan. Je mag {{max}} keer controleren.",
     "note": "<b>Cijfer?</b> is een aantekening: hier komt een cijfer, je weet nog niet welk.",
     "noClock": "Er loopt geen tijd. Je kunt later vandaag gewoon verder."

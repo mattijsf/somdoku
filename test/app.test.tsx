@@ -6,7 +6,7 @@ import { i18n } from "../src/i18n"
 import { EMPTY, WHITE } from "../src/lib/game"
 import { BLACK } from "../src/lib/puzzle"
 import { freshGame } from "../src/stores/savedGame"
-import { day, n, solution } from "../src/stores/today"
+import { day, k, n, solution } from "../src/stores/today"
 import { useGameStore } from "../src/stores/useGameStore"
 import { useUiStore } from "../src/stores/useUiStore"
 
@@ -81,6 +81,16 @@ describe("filling in", () => {
   it("points out a digit that is in a line twice", () => {
     fill(0, 2)
     fill(1, 2)
+    expect(cell(0).className).toContain("double")
+    expect(cell(1).className).toContain("double")
+  })
+
+  it("says in the corner what goes in, and points out a black cell too many in a line", () => {
+    expect(
+      screen.getByRole("img", { name: `Digits 1 to ${k}, one black cell per row and column` })
+    ).toBeTruthy()
+    fill(0, BLACK)
+    fill(1, BLACK)
     expect(cell(0).className).toContain("double")
     expect(cell(1).className).toContain("double")
   })

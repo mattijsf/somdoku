@@ -17,11 +17,14 @@ files plus `tsc -b`, and commitlint on the message (Conventional Commits); on pu
 
 ## How it works
 
-- `src/lib/`: the rules, generator and solver, and the game logic. No React, no DOM. 5 by 5, digits
-  1 to 5 and black cells, each digit at most once per row and column. A day's puzzle comes from its
-  date, so changing the generator changes every day.
+- `src/lib/`: the rules, generator and solver, and the game logic. No React, no DOM. As in the puzzle
+  booklet: 5 by 5, digits 1 to 4, every digit exactly once and one black cell per row and column;
+  the corner of the grid says what goes in. Only puzzle 1 (11 November 2026) was freer: digits 1
+  to 5, each at most once, and as many black cells as needed. A day's puzzle comes from its date,
+  so changing the generator changes every day.
 - `src/stores/`: zustand stores for the game and the UI. The game is kept in `localStorage`.
-  `?oefen=1`, `?oefen=2`, … gives a practice puzzle, `&maat=4` or `&maat=6` a smaller or larger one.
+  `?oefen=1`, `?oefen=2`, … gives a practice puzzle, `&maat=4` or `&maat=6` a smaller or larger one:
+  4 by 4 with digits 1 to 3, 6 by 6 with 1 to 4 and two black cells per row and column.
 - `src/features/`: the screens (`play`, `done`), the top bar and the rules.
 - `src/hooks/`, `src/utils/`: shared pieces, the keyboard, the change of day and storage.
 - `src/locales/`: English and Dutch translations (react-i18next).

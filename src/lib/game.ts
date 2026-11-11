@@ -12,7 +12,7 @@ export const EMPTY = null
 export const WHITE = -1
 /** What a cell holds: a digit, BLACK, WHITE, or EMPTY. */
 export type Value = number | typeof EMPTY
-/** What a check found: for each row, whether all of it is right. */
+/** What one check found: for each row, whether all of it was right. */
 export type Check = boolean[]
 
 const pad = (number: number): string => String(number).padStart(2, "0")
@@ -32,14 +32,31 @@ export const puzzleNumber = (day: string): number =>
   Math.round((utc(day) - utc(FIRST_DAY)) / 86400000) + 1
 
 /**
+ * The day the game went over to the booklet's rules: every digit exactly once and one black
+ * cell in every row and column, on 5 by 5 with the digits 1 to 4. The first day's puzzle was freer
+ * (1 to 5, a digit at most once, any number of black cells) and stays as it was.
+ */
+export const BOOK_RULES_FROM = "2026-11-12"
+
+/**
  * Everyone gets the same puzzle on the same day. The seed still says "sommetje", the game's first
  * name: changing it would change every day's puzzle, also for those who are halfway through today's.
  */
 export const dailyPuzzle = (day: string): Puzzle =>
-  generate(hash(`sommetje ${day}`), { n: 5, k: 5, minPasses: 3 })
+  day < BOOK_RULES_FROM
+    ? generate(hash(`sommetje ${day}`), { n: 5, k: 5, minPasses: 3 })
+    : generate(hash(`sommetje ${day}`), { n: 5, k: 4, blacks: 1, minPasses: 3 })
 
-export const practicePuzzle = (number: number, n = 5): Puzzle =>
-  generate(hash(`oefen ${n} ${number}`), { n, k: n, minPasses: n > 4 ? 3 : 2 })
+/** Practice puzzles, by the booklet's rules: 4 by 4 with 1-3, 5 by 5 with 1-4, 6 by 6 with 1-4 and two black cells. */
+export function practicePuzzle(number: number, n = 5): Puzzle {
+  const blacks = n === 6 ? 2 : 1
+  return generate(hash(`oefen ${n} ${number}`), {
+    n,
+    k: n - blacks,
+    blacks,
+    minPasses: n === 5 ? 3 : 2,
+  })
+}
 
 export const isFilled = (value: Value): boolean => value !== EMPTY && value !== WHITE
 
@@ -52,6 +69,12 @@ export function doubles(values: readonly Value[]): Set<number> {
     }
   })
   return places
+}
+
+/** The black cells in a line that has more of them than the rules allow: also plain to see. */
+export function spare(values: readonly Value[], blacks: number | null): Set<number> {
+  const places = values.flatMap((value, i) => (value === 0 ? [i] : []))
+  return new Set(blacks !== null && places.length > blacks ? places : [])
 }
 
 /** What a check tells the player: for each row, whether all of it is right. Not which cell is wrong. */
@@ -67,8 +90,7 @@ export function rowsRight(cells: readonly Value[], solution: readonly number[], 
 }
 
 /** One line of the picture: a square per row of the puzzle, green when that row was right. */
-export const squares = (check: readonly boolean[]): string =>
-  check.map(right => (right ? "🟩" : "⬛")).join("")
+export const squares = (check: Check): string => check.map(right => (right ? "🟩" : "⬛")).join("")
 
 /**
  * "Somdoku 12 3/6" with a line of squares per check, ready for WhatsApp. The same shape as a

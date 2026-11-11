@@ -1,7 +1,19 @@
 import type { ReactElement } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { MAX_CHECKS } from "../../lib/game"
-import { k } from "../../stores/today"
+import { BLACK } from "../../lib/puzzle"
+import { blacks, k } from "../../stores/today"
+
+// The example follows the puzzle's own digits: the highest alone, the others together.
+const lower = Array.from({ length: k - 1 }, (_, i) => i + 1)
+const example =
+  blacks === null
+    ? { line: [4, BLACK, 1, 5, BLACK], sums: [4, 6], says: { k: 4, parts: "1 + 5", sum: 6 } }
+    : {
+        line: [k, BLACK, ...lower, ...new Array<number>(blacks - 1).fill(BLACK)],
+        sums: [k, (k * (k - 1)) / 2],
+        says: { k, parts: lower.join(" + "), sum: (k * (k - 1)) / 2 },
+      }
 
 /** The three rules, one example, and how a game goes. */
 export function Rules(): ReactElement {
@@ -9,23 +21,31 @@ export function Rules(): ReactElement {
   return (
     <>
       <ol className="steps">
-        <li>{t("rules.fill", { k })}</li>
-        <li>{t("rules.once")}</li>
+        {blacks === null ? (
+          <>
+            <li>{t("rules.fill", { k })}</li>
+            <li>{t("rules.once")}</li>
+          </>
+        ) : (
+          <>
+            <li>{t("rules.digits", { k })}</li>
+            <li>{t("rules.blacks", { count: blacks })}</li>
+          </>
+        )}
         <li>{t("rules.sums")}</li>
       </ol>
       <div className="example">
         <div className="tiles" aria-hidden="true">
           <span className="sums">
-            <span>4</span>
-            <span>6</span>
+            {example.sums.map((sum, j) => (
+              <span key={j}>{sum}</span>
+            ))}
           </span>
-          <i>4</i>
-          <i className="black" />
-          <i>1</i>
-          <i>5</i>
-          <i className="black" />
+          {example.line.map((value, j) =>
+            value === BLACK ? <i key={j} className="black" /> : <i key={j}>{value}</i>
+          )}
         </div>
-        <p className="hint">{t("rules.example")}</p>
+        <p className="hint">{t("rules.example", example.says)}</p>
       </div>
       <ul className="legend">
         <li>

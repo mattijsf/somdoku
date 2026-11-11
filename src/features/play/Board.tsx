@@ -1,9 +1,9 @@
 import { Fragment, type CSSProperties, type ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { at } from "../../lib/at"
-import { EMPTY, WHITE, doubles, type Value } from "../../lib/game"
+import { EMPTY, WHITE, doubles, spare, type Value } from "../../lib/game"
 import { BLACK } from "../../lib/puzzle"
-import { n, puzzle, rowOf, solution } from "../../stores/today"
+import { blacks, k, n, puzzle, rowOf, solution } from "../../stores/today"
 import { locked, useGameStore } from "../../stores/useGameStore"
 import { STEP } from "../../utils/motion"
 
@@ -30,7 +30,8 @@ const classes = (...names: (string | false | null | undefined)[]): string =>
   names.filter(Boolean).join(" ")
 
 /**
- * The grid with the sums beside it. A digit that is in a line twice turns red; a row that a
+ * The grid with the sums beside it. What breaks a rule in plain sight turns red: a digit twice in
+ * a line, or more black cells than a line gets. A row that a
  * check found right turns green and stays as it is. A check is shown row by row.
  */
 export function Board(): ReactElement {
@@ -48,9 +49,12 @@ export function Board(): ReactElement {
   const shown: readonly Value[] = lost ? solution : cells // after a lost game the board shows the solution
   const last = checks.at(-1)
   const right = (r: number): boolean => locked({ checks }, r)
-  const rowDoubles = Array.from({ length: n }, (_, r) => doubles(shown.slice(r * n, r * n + n)))
+  // What breaks a rule in plain sight: a digit twice in a line, or more black cells than a line gets.
+  const wrongIn = (line: readonly Value[]): Set<number> =>
+    new Set([...doubles(line), ...spare(line, blacks)])
+  const rowDoubles = Array.from({ length: n }, (_, r) => wrongIn(shown.slice(r * n, r * n + n)))
   const colDoubles = Array.from({ length: n }, (_, c) =>
-    doubles(Array.from({ length: n }, (__, r) => at(shown, r * n + c)))
+    wrongIn(Array.from({ length: n }, (__, r) => at(shown, r * n + c)))
   )
 
   const says = (value: Value): string => {
@@ -73,7 +77,19 @@ export function Board(): ReactElement {
       aria-label={t("board.label")}
       style={{ "--n": n, "--runs": runs }}
     >
-      <div />
+      {/* The corner says what goes in, as the booklet does at the top of the page: which digits,
+          and how many black cells in every row and column. */}
+      {blacks === null ? (
+        <div />
+      ) : (
+        <div className="recipe" role="img" aria-label={t("board.recipe", { k, count: blacks })}>
+          <span>{`1–${k}`}</span>
+          <span>
+            <i />
+            {blacks}
+          </span>
+        </div>
+      )}
       {puzzle.cols.map((clue, c) => (
         <ClueLine
           key={c}
