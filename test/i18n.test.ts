@@ -22,6 +22,10 @@ describe("the translations", () => {
     expect(i18n.t("done.changedLater", { lng: "nl" })).toBe("later aangepast")
   })
 
+  it("say what Woordle says after copying", () => {
+    expect(i18n.t("done.copied", { lng: "nl" })).toBe("Score gekopieerd. Plak in WhatsApp.")
+  })
+
   it("have no button to check with and no notes: the grid being right is the end", () => {
     const words = [english, dutch]
       .flatMap(tree => keysOf(tree).map(key => i18n.t(key as never)))

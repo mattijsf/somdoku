@@ -5,6 +5,7 @@ import { at } from "../../lib/at"
 import { clock, marks, shareText } from "../../lib/game"
 import { n, name } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
+import { useUiStore } from "../../stores/useUiStore"
 import { ShareBubble } from "./ShareBubble"
 import { shareScore } from "./shareScore"
 
@@ -14,9 +15,10 @@ export function DoneScreen(): ReactElement {
   const finished = useGameStore(game => game.finished)
   const active = useGameStore(game => game.active)
   const trail = useGameStore(game => game.trail)
+  const showToast = useUiStore(ui => ui.showToast)
   const result = useRef<HTMLPreElement>(null)
   const [copyByHand, setCopyByHand] = useState(false) // the clipboard said no: the text is shown to copy
-  const [said, setSaid] = useState<"share" | "copied" | "copyAbove">("share") // what the share button says
+  const [hint, setHint] = useState(false)
 
   const seconds = active / 1000
   const text = shareText({ name, seconds, trail, n })
@@ -32,21 +34,18 @@ export function DoneScreen(): ReactElement {
     const shared = await shareScore(
       text + (hosted ? `\n${location.origin}${location.pathname}` : "")
     )
-    if (shared === "shared") {
-      return
-    }
     if (shared === "copied") {
-      setSaid("copied")
-    } else {
+      showToast(t("done.copied"))
+    } else if (shared === "failed") {
       flushSync(() => {
         setCopyByHand(true)
-        setSaid("copyAbove")
+        setHint(true)
       })
       if (result.current) {
         getSelection()?.selectAllChildren(result.current)
       }
+      setTimeout(() => setHint(false), 2500)
     }
-    setTimeout(() => setSaid("share"), 2500)
   }
 
   return (
@@ -70,7 +69,7 @@ export function DoneScreen(): ReactElement {
             {text}
           </pre>
           <button id="share" className="btn primary" type="button" onClick={() => void share()}>
-            {t(`done.${said}`)}
+            {hint ? t("done.copyAbove") : t("done.share")}
           </button>
           <p id="done-note" className="hint">
             {t("done.tomorrow")}

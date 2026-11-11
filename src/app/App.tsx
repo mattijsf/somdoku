@@ -1,4 +1,5 @@
 import { useEffect, type ReactElement } from "react"
+import { Toast } from "../components/Toast"
 import { DoneScreen } from "../features/done/DoneScreen"
 import { PlayScreen } from "../features/play/PlayScreen"
 import { ReadyScreen } from "../features/ready/ReadyScreen"
@@ -33,6 +34,7 @@ export function App(): ReactElement {
         <PlayScreen />
         <DoneScreen />
       </main>
+      <Toast />
       <RulesDialog />
     </>
   )

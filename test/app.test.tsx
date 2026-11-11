@@ -2,6 +2,7 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { App } from "../src/app/App"
+import { shareScore } from "../src/features/done/shareScore"
 import { i18n } from "../src/i18n"
 import { EMPTY } from "../src/lib/game"
 import { BLACK } from "../src/lib/puzzle"
@@ -39,7 +40,7 @@ beforeEach(async () => {
     revealing: false,
     showResult: false,
   })
-  useUiStore.setState({ rulesOpen: false })
+  useUiStore.setState({ rulesOpen: false, toastUp: false })
 })
 
 afterEach(() => {
@@ -263,7 +264,30 @@ describe("the end", () => {
     })
     const [[shared]] = writeText.mock.calls as unknown as [[string]]
     expect(shared).toMatch(/^Somdoku \d+ · \d+:\d\d\n(🟩{5}\n){4}🟩{5}$/u)
-    expect(screen.getByRole("button", { name: "Copied" })).toBeTruthy()
+    expect(screen.getByRole("status").textContent).toBe("Score copied. Paste it in WhatsApp.")
+  })
+})
+
+describe("sharing", () => {
+  const as = (userAgent: string): void => {
+    Object.defineProperty(navigator, "userAgent", { configurable: true, value: userAgent })
+  }
+  afterEach(() => {
+    Reflect.deleteProperty(navigator, "userAgent")
+    Reflect.deleteProperty(navigator, "share")
+  })
+
+  it("opens the share sheet on an iPhone, and copies everywhere else", async () => {
+    const share = vi.fn(() => Promise.resolve())
+    const writeText = vi.fn(() => Promise.resolve())
+    Object.defineProperty(navigator, "share", { configurable: true, value: share })
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } })
+    as("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)")
+    expect(await shareScore("Somdoku 1")).toBe("shared")
+    as("Mozilla/5.0 (Linux; Android 15)")
+    expect(await shareScore("Somdoku 1")).toBe("copied")
+    expect(share).toHaveBeenCalledTimes(1)
+    expect(writeText).toHaveBeenCalledTimes(1)
   })
 })
 
