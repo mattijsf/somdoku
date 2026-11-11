@@ -1,0 +1,11 @@
+// Code that runs on node: tests and tool config. Tests import browser modules, hence DOM and
+// the two declaration files the app relies on.
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node", "vite/client"]
+  },
+  "include": ["test", "vite.config.ts", "eslint.config.ts", "src/react.d.ts", "src/i18next.d.ts"]
+}

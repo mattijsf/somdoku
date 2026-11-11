@@ -1,0 +1,8 @@
+dist
+.wrangler
+package-lock.json
+public
+art
+# The stylesheet and page keep their compact hand-written layout; tests read exact rules from them.
+src/style.css
+index.html

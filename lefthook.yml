@@ -1,0 +1,32 @@
+glob_matcher: doublestar
+
+pre-commit:
+  jobs:
+    - name: eslint
+      glob: "**/*.{ts,tsx}"
+      stage_fixed: true
+      run: npx eslint --cache --cache-strategy content --fix --max-warnings=0 --no-warn-ignored {staged_files}
+    - name: prettier
+      glob: "**/*.{json,md,yml,yaml}"
+      stage_fixed: true
+      run: npx prettier --write --ignore-unknown {staged_files}
+    - name: typecheck
+      glob: "**/*.{ts,tsx,json}"
+      run: npx tsc -b
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: npx commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: npx tsc -b
+    - name: lint
+      run: npx eslint --cache --cache-strategy content --max-warnings=0 .
+    - name: format
+      run: npx prettier --check .
+    - name: test
+      run: npx vitest run
