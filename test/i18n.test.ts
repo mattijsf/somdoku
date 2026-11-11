@@ -17,6 +17,20 @@ describe("the translations", () => {
     expect(keysOf(dutch).sort()).toEqual(keysOf(english).sort())
   })
 
+  it("say the score in changes, one or more", () => {
+    expect(i18n.t("edits", { count: 1, lng: "en" })).toBe("1 change")
+    expect(i18n.t("edits", { count: 3, lng: "en" })).toBe("3 changes")
+    expect(i18n.t("edits", { count: 1, lng: "nl" })).toBe("1 wijziging")
+    expect(i18n.t("edits", { count: 3, lng: "nl" })).toBe("3 wijzigingen")
+  })
+
+  it("have no button to check with and no notes: the grid being right is the end", () => {
+    const words = [english, dutch]
+      .flatMap(tree => keysOf(tree).map(key => i18n.t(key as never)))
+      .join(" ")
+    expect(words).not.toMatch(/Controleer|Check\b|Cijfer\?|notes?\b/i)
+  })
+
   it("fall back to English for a language the game does not speak", () => {
     expect(i18n.t("done.share", { lng: "fr" })).toBe("Share")
   })

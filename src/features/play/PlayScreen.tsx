@@ -1,10 +1,9 @@
 import type { ReactElement } from "react"
-import { Actions } from "./Actions"
 import { Board } from "./Board"
 import { Keypad } from "./Keypad"
 import { Note } from "./Note"
 
-/** The puzzle: tap a cell and then a key. Check when it is all filled in. */
+/** The puzzle: tap a cell and then a key. */
 export function PlayScreen(): ReactElement {
   return (
     <section id="play">
@@ -12,7 +11,6 @@ export function PlayScreen(): ReactElement {
         <Board />
       </div>
       <Keypad />
-      <Actions />
       <Note />
     </section>
   )

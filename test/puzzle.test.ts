@@ -2,17 +2,17 @@ import { describe, expect, it } from "vitest"
 import {
   EMPTY,
   LEVELS,
-  MAX_CHECKS,
-  WHITE,
   dailyPuzzle,
   doubles,
+  freshTrail,
   isFilled,
   levelOf,
+  marks,
+  noteMove,
   puzzleNumber,
-  rowsRight,
   shareText,
+  solved,
   spare,
-  type Check,
 } from "../src/lib/game"
 import {
   clueOf,
@@ -163,45 +163,51 @@ describe("a game", () => {
   it("points out black cells when a line has more than it gets", () => {
     expect([...spare([0, 1, 0, 2, 3], 1)].sort()).toEqual([0, 2])
     expect(spare([0, 1, 4, 2, 3], 1).size).toBe(0)
-    expect(spare([0, 0, 0, EMPTY, WHITE], 2).size).toBe(3)
+    expect(spare([0, 0, 0, EMPTY, 1], 2).size).toBe(3)
   })
 
   it("points out a digit that is in a line twice", () => {
     expect([...doubles([4, 0, 4, EMPTY, 0])].sort()).toEqual([0, 2])
-    expect(doubles([4, 0, 1, WHITE, 0]).size).toBe(0)
+    expect(doubles([4, 0, 1, EMPTY, 0]).size).toBe(0)
     expect(doubles([0, 0, 0, 0, 0]).size).toBe(0) // black cells may repeat
   })
 
-  it("counts a note or an empty cell as not filled in", () => {
-    expect([EMPTY, WHITE, 0, 3].map(isFilled)).toEqual([false, false, true, true])
-  })
-
-  it("says per row whether it is right, not which cell is wrong", () => {
+  it("is over when the grid is right, and not before", () => {
     const solution = [1, 2, 0, 1]
-    expect(rowsRight([1, 2, 0, 1], solution, 2)).toEqual([true, true])
-    expect(rowsRight([2, 1, 0, 1], solution, 2)).toEqual([false, true])
-    expect(rowsRight([1, 2, 0, 2], solution, 2)).toEqual([true, false])
+    expect(solved([1, 2, 0, 1], solution)).toBe(true)
+    expect(solved([1, 2, 0, EMPTY], solution)).toBe(false)
+    expect(solved([2, 1, 0, 1], solution)).toBe(false)
+    expect([EMPTY, 0, 3].map(isFilled)).toEqual([false, true, true])
   })
 
-  it("shares the number of checks with a line per check, like a Woordle score", () => {
-    const checks = [
-      [true, false, true],
-      [true, true, true],
-    ]
-    expect(shareText({ name: "Somdoku 12", checks, solved: true })).toBe(
-      "Somdoku 12 2/6\n🟩⬛🟩\n🟩🟩🟩"
-    )
+  it("fills a cell for free, and counts taking something back", () => {
+    const trail = freshTrail(4)
+    noteMove(trail, 0, EMPTY, 3) // filled in
+    noteMove(trail, 1, EMPTY, 2)
+    noteMove(trail, 2, EMPTY, 0) // a black cell
+    expect(trail).toMatchObject({ edits: 0, order: [0, 1, 2] })
+
+    noteMove(trail, 0, 3, 1) // another digit over it
+    noteMove(trail, 2, 0, EMPTY) // wiped
+    noteMove(trail, 2, EMPTY, 4) // and filled in again: the wiping was the change
+    noteMove(trail, 3, EMPTY, EMPTY) // nothing happened
+    expect(trail).toMatchObject({ edits: 2, order: [0, 1, 2], changed: [true, false, true, false] })
+  })
+
+  it("shares the score with a timeline: a square per cell in the order they were filled", () => {
+    const trail = freshTrail(4)
+    ;[2, 0, 3, 1].forEach(cell => noteMove(trail, cell, EMPTY, 1)) // filled in this order
+    noteMove(trail, 0, 1, 2) // the second one filled was altered later
+    expect(marks(trail)).toEqual(["g", "y", "g", "g"])
+    expect(shareText({ name: "Somdoku 12", trail, n: 2 })).toBe("Somdoku 12 ✏️1\n🟩🟨\n🟩🟩")
     expect(
-      shareText({
-        name: "Somdoku 12",
-        checks: new Array<Check>(MAX_CHECKS).fill([true, false, false]),
-        solved: false,
-      })
-    ).toMatch(/^Somdoku 12 X\/6\n(🟩⬛⬛\n){5}🟩⬛⬛$/u)
-    expect(
-      shareText({ name: "Somdoku 12", checks: [[true]], solved: true, url: "https://x.nl/" })
-        .split("\n")
-        .at(-1)
+      shareText({ name: "Somdoku 12", trail, n: 2, url: "https://x.nl/" }).split("\n").at(-1)
     ).toBe("https://x.nl/")
+  })
+
+  it("shows a flawless game as nothing but green", () => {
+    const trail = freshTrail(4)
+    ;[0, 1, 2, 3].forEach(cell => noteMove(trail, cell, EMPTY, 1))
+    expect(shareText({ name: "Somdoku 1", trail, n: 2 })).toBe("Somdoku 1 ✏️0\n🟩🟩\n🟩🟩")
   })
 })

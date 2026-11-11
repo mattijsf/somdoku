@@ -1,6 +1,5 @@
 import type { ReactElement } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { MAX_CHECKS } from "../../lib/game"
 import { BLACK } from "../../lib/puzzle"
 import { blacks, k } from "../../stores/today"
 
@@ -38,15 +37,13 @@ export function Rules(): ReactElement {
       </div>
       <ul className="legend">
         <li>
-          <span className="swatch ring" aria-hidden="true" />
-          <span>
-            <Trans i18nKey="rules.note" components={{ b: <b /> }} />
-          </span>
+          <span className="swatch tick" aria-hidden="true" />
+          <span>{t("rules.solved")}</span>
         </li>
         <li>
-          <span className="swatch tick" aria-hidden="true" />
+          <span className="swatch pen" aria-hidden="true" />
           <span>
-            <Trans i18nKey="rules.check" values={{ max: MAX_CHECKS }} components={{ b: <b /> }} />
+            <Trans i18nKey="rules.score" components={{ b: <b /> }} />
           </span>
         </li>
         <li>

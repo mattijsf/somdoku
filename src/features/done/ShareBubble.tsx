@@ -1,27 +1,27 @@
 import type { ReactElement } from "react"
 import { useTranslation } from "react-i18next"
-import type { Check } from "../../lib/game"
+import type { Mark } from "../../lib/game"
 import { n } from "../../stores/today"
 
-/** What gets shared, drawn as the message it will be: the head, and a line of squares per check. */
-export function ShareBubble({
-  head,
-  checks,
-}: {
-  head: string
-  checks: readonly Check[]
-}): ReactElement {
+/** What gets shared, drawn as the message it will be: the time, and the timeline n squares to a line. */
+export function ShareBubble({ head, trail }: { head: string; trail: Mark[] }): ReactElement {
   const { t } = useTranslation()
-  const lines = checks
-    .map(found => t("done.rowsRight", { right: found.filter(Boolean).length, total: n }))
-    .join(", ")
+  const count = (mark: Mark): number => trail.filter(m => m === mark).length
+  const lines = Array.from({ length: Math.ceil(trail.length / n) }, (_, line) =>
+    trail.slice(line * n, line * n + n)
+  )
   return (
-    <div id="bubble" className="bubble" role="img" aria-label={t("done.result", { head, lines })}>
+    <div
+      id="bubble"
+      className="bubble"
+      role="img"
+      aria-label={t("done.result", { head, first: count("g"), later: count("y") })}
+    >
       <b>{head}</b>
-      {checks.map((found, line) => (
+      {lines.map((marks, line) => (
         <span key={line}>
-          {found.map((right, r) => (
-            <i key={r} className={right ? "g" : "x"} style={{ "--d": `${line * 90 + r * 30}ms` }} />
+          {marks.map((mark, j) => (
+            <i key={j} className={mark} style={{ "--d": `${line * 90 + j * 30}ms` }} />
           ))}
         </span>
       ))}

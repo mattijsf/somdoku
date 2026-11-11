@@ -4,7 +4,7 @@
   --bg:#EDF1EC; --surface:#FFFFFF; --cell:#FFFFFF; --key:#FFFFFF; --ink:#15231D; --muted:#5A6A62; --line:#CFD9D2;
   --edge:#BDCAC1; --near:#DFEDE4; --green:#2E9B5F; --green-deep:#1D6B40; --tint-green:#CFEBD9;
   --danger:#B5412B; --tint-danger:#F8DDD5; --black:#15231D; --black-edge:#000; --black-line:transparent;
-  --x:#15231D; --bubble:#DCF3E3; --off:#CFEBD9; --off-ink:#3F9567;
+  --amber:#E0B32E; --bubble:#DCF3E3; --off:#CFEBD9; --off-ink:#3F9567;
   --keyh:52px; --cap:78px;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
@@ -14,7 +14,7 @@
     --bg:#0E1A16; --surface:#182A21; --cell:#273D32; --key:#22362C; --ink:#E7EFEA; --muted:#94A69D; --line:#2F463B;
     --edge:#050A08; --near:#324C3E; --green:#36A869; --green-deep:#1F6B42; --tint-green:#1F5A3A;
     --danger:#F08A73; --tint-danger:#5A2C21; --black:#000; --black-edge:#000; --black-line:#22342B;
-    --x:#93A39B; --bubble:#1C4A31; --off:#17352A; --off-ink:#4E8C6A;
+    --amber:#D9AC2B; --bubble:#1C4A31; --off:#17352A; --off-ink:#4E8C6A;
   }
 }
 *,*::before,*::after{box-sizing:inherit}
@@ -61,13 +61,14 @@ body[data-view="done"] #play{flex:none}
 .mark i.b{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
 .nr{color:var(--muted);font-weight:650;font-size:.9rem;white-space:nowrap;padding-top:3px}
 .tries{margin-left:auto;display:flex;align-items:center;gap:8px}
-/* the score as it will be shared: a line per check, a square per row */
+/* the picture as it will be shared: a square per cell, in the order they were filled; beside it the score */
 .tally{display:grid;grid-template-columns:repeat(var(--n),5px);gap:2px}
 .tally i{height:5px;border-radius:1.5px;background:var(--line)}
 .tally .g,.bubble .g{background:var(--green)}
-.tally .x,.bubble .x{background:var(--x)}
+.tally .y,.bubble .y{background:var(--amber)}
 .tally .new{animation:pip .3s calc(var(--d) + .15s) backwards}
-.count{font-weight:800;font-size:1.05rem}
+.count{font-weight:800;font-size:1.05rem;white-space:nowrap}
+.count::before{content:"✏️";font-size:.8em;margin-right:3px}
 .round{width:44px;height:44px;margin-right:-6px;padding:0;border:0;background:none;display:grid;place-items:center;cursor:pointer;
   touch-action:manipulation}
 .round::before{content:"?";width:32px;height:32px;border-radius:50%;background:var(--key);box-shadow:0 2px 0 var(--edge);
@@ -76,7 +77,7 @@ body[data-view="done"] #play{flex:none}
 
 /* one screen at a time */
 body[data-view="play"] #done,
-body[data-view="done"] .pad, body[data-view="done"] .actions, body[data-view="done"] .note{display:none}
+body[data-view="done"] .pad, body[data-view="done"] .note{display:none}
 
 /* the puzzle: sums on top and on the left, tiles in between */
 .board{display:grid;grid-template-columns:auto repeat(var(--n),minmax(0,var(--cap)));gap:clamp(3px,calc((8 - var(--n)) * 1.65px),5px);justify-content:center;
@@ -93,19 +94,15 @@ body[data-view="done"] .pad, body[data-view="done"] .actions, body[data-view="do
 .cell.near{background:var(--near)}
 .cell.double{color:var(--danger);background:var(--tint-danger)}
 .cell.ok{background:var(--tint-green);box-shadow:none}
-.cell.missed{color:var(--danger);background:var(--tint-danger);box-shadow:none}
 .cell.black{background:var(--black);box-shadow:0 2px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}
 .cell.black.ok{box-shadow:inset 0 0 0 3px var(--green-deep)}
-.cell.black.missed,.cell.black.double{box-shadow:inset 0 0 0 3px var(--danger)}
-.cell.white::after{content:"";width:.6em;height:.6em;border-radius:50%;border:.11em solid var(--muted)}
+.cell.black.double{box-shadow:inset 0 0 0 3px var(--danger)}
 .cell.sel{box-shadow:0 0 0 3px var(--green);z-index:1}
 .cell.tap{animation:tap .14s}
-/* a check, shown row by row: right rows turn green, the others shake their head */
+/* the finished grid, shown row by row: every row turns green */
 .cell.pop{animation:pop .5s var(--d) backwards}
 .cell.black.pop{animation-name:pop-black}
 .clue.pop{animation:pop-clue .5s var(--d) backwards}
-.cell.shake{animation:shake .45s var(--d)}
-.clue.shake{animation:shake-clue .45s var(--d) backwards}
 
 /* the keys under the puzzle */
 .pad{display:grid;gap:8px;margin-top:12px}
@@ -116,15 +113,12 @@ body[data-view="done"] .pad, body[data-view="done"] .actions, body[data-view="do
 .key:active{transform:translateY(2px);box-shadow:0 1px 0 var(--edge)}
 .key.tool{font-size:.95rem;font-weight:700}
 .key.on{background:var(--tint-green);box-shadow:0 3px 0 var(--green)}
-.pad.idle .key{opacity:.6}
 .swatch{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:5px}
 .swatch.black{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
-.swatch.ring{width:17px;height:17px;border-radius:50%;border:3px solid var(--muted)}
 .key svg{flex:none}
 .top,.pad,.btn{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 
 /* buttons: a little raised, like the tiles */
-.actions{margin-top:12px}
 .btn{display:block;width:100%;font:inherit;font-weight:800;font-size:1.05rem;text-align:center;text-decoration:none;
   color:var(--ink);background:var(--key);border:0;border-radius:12px;min-height:52px;
   padding:13px 14px;cursor:pointer;box-shadow:0 3px 0 var(--edge);touch-action:manipulation}
@@ -164,9 +158,10 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 .tiles i.black{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
 .sums{display:flex;gap:.5em;font-weight:750;padding-right:6px}
 .legend .swatch{width:24px;height:24px;border-radius:50%;font-weight:800;font-size:.85rem;line-height:1}
-.legend .ring{width:19px;height:19px;margin:2px auto 0}
 .legend .tick{background:var(--green);color:#fff}
 .legend .tick::before{content:"✓"}
+.legend .pen{background:var(--amber);color:#231C03}
+.legend .pen::before{content:"✎"}
 .legend .calm{background:var(--near)}
 .legend .calm::before{content:"∞"}
 .rules + form{margin-top:16px}
@@ -175,8 +170,6 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 @keyframes pop{0%{background:var(--cell);box-shadow:0 2px 0 var(--edge)}45%{transform:scale(1.1)}}
 @keyframes pop-black{0%{box-shadow:0 2px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}45%{transform:scale(1.1)}}
 @keyframes pop-clue{0%{color:var(--ink)}45%{transform:scale(1.15)}}
-@keyframes shake{20%{transform:translateX(-5px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
-@keyframes shake-clue{0%{color:var(--ink);background:none}20%{transform:translateX(-5px)}40%{transform:translateX(4px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
 @keyframes pip{from{transform:scale(.3);opacity:0}}
 @keyframes rise{from{transform:translateY(14px);opacity:0}}
 @media (prefers-reduced-motion: reduce){

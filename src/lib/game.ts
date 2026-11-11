@@ -1,19 +1,22 @@
-// What a game of Somdoku is besides the puzzle: which puzzle belongs to which day, what a
-// check tells the player, and the message that is shared afterwards. There is no clock: like
-// Woordle, the score is how many tries it took, and a game may be spread over the day.
+// What a game of Somdoku is besides the puzzle: which puzzle belongs to which day, how the score
+// is kept and the message that is shared afterwards. There is no clock and no button to check
+// with: every step can be worked out and the sums can be added up by hand, so the game is simply
+// over when the grid is right. The score is the number of changes: what had to be taken back.
 
 import { at } from "./at"
 import { generate, hash, rng, type Puzzle } from "./puzzle"
 
 export const FIRST_DAY = "2026-11-11"
-export const MAX_CHECKS = 6
 export const EMPTY = null
-/** "A digit goes here, I don't know which yet." A note; counts as not filled in. */
-export const WHITE = -1
-/** What a cell holds: a digit, BLACK, WHITE, or EMPTY. */
+/** What a cell holds: a digit, BLACK, or EMPTY. */
 export type Value = number | typeof EMPTY
-/** What one check found: for each row, whether all of it was right. */
-export type Check = boolean[]
+/** How a cell went in the shared picture: 'g' right away, 'y' altered later. */
+export type Mark = "g" | "y"
+export interface Trail {
+  order: number[]
+  changed: boolean[]
+  edits: number
+}
 
 const pad = (number: number): string => String(number).padStart(2, "0")
 
@@ -56,13 +59,13 @@ export function dailyPuzzle(day: string): Puzzle {
   })
 }
 
-export const isFilled = (value: Value): boolean => value !== EMPTY && value !== WHITE
+export const isFilled = (value: Value): value is number => value !== EMPTY
 
 /** The places in a line that hold a digit that is there twice: a broken rule anyone can see. */
 export function doubles(values: readonly Value[]): Set<number> {
   const places = new Set<number>()
   values.forEach((value, i) => {
-    if (value !== EMPTY && value > 0 && values.indexOf(value) !== i) {
+    if (isFilled(value) && value > 0 && values.indexOf(value) !== i) {
       places.add(i).add(values.indexOf(value))
     }
   })
@@ -75,36 +78,64 @@ export function spare(values: readonly Value[], blacks: number): Set<number> {
   return new Set(places.length > blacks ? places : [])
 }
 
-/** What a check tells the player: for each row, whether all of it is right. Not which cell is wrong. */
-export function rowsRight(cells: readonly Value[], solution: readonly number[], n: number): Check {
-  return Array.from({ length: n }, (_, r) => {
-    for (let c = 0; c < n; c++) {
-      if (cells[r * n + c] !== solution[r * n + c]) {
-        return false
-      }
-    }
-    return true
-  })
-}
-
-/** One line of the picture: a square per row of the puzzle, green when that row was right. */
-export const squares = (check: Check): string => check.map(right => (right ? "🟩" : "⬛")).join("")
+/** The grid is right: every cell holds what the solution holds. */
+export const solved = (cells: readonly Value[], solution: readonly number[]): boolean =>
+  cells.every((value, i) => value === solution[i])
 
 /**
- * "Somdoku 12 3/6" with a line of squares per check, ready for WhatsApp. The same shape as a
- * Woordle score, and it gives away nothing of the solution.
+ * How a game went, kept as it is played. `order`: the cells in the order they were first filled.
+ * `changed`: cells that were altered after they held a digit or a black cell. `edits`: the score.
  */
+export const freshTrail = (cells: number): Trail => ({
+  order: [],
+  changed: new Array<boolean>(cells).fill(false),
+  edits: 0,
+})
+
+/**
+ * What putting `to` in a cell that held `from` does to the score. Filling an empty cell is free
+ * and puts the cell on the timeline. Altering a digit or a black cell, also by wiping it, is one
+ * change: the sums can be checked by hand before a cell is filled, so having to take something
+ * back is what counts.
+ */
+export function noteMove(trail: Trail, cell: number, from: Value, to: Value): void {
+  if (to === from) {
+    return
+  }
+  if (isFilled(from)) {
+    trail.edits += 1
+    trail.changed[cell] = true
+  } else if (!trail.order.includes(cell)) {
+    trail.order.push(cell)
+  }
+}
+
+/**
+ * The timeline: for every cell, in the order they were filled, how it went. 'g' right away,
+ * 'y' altered later. It says nothing about where a cell is, so it gives away nothing of the
+ * solution.
+ */
+export const marks = (trail: Trail): Mark[] =>
+  trail.order.map(cell => (trail.changed[cell] ? "y" : "g"))
+
+const SQUARE: Record<Mark, string> = { g: "🟩", y: "🟨" }
+
+/** "Somdoku 12 ✏️3" with the timeline under it, n squares to a line, ready for WhatsApp. */
 export function shareText({
   name,
-  checks,
-  solved,
+  trail,
+  n,
   url,
 }: {
   name: string
-  checks: readonly Check[]
-  solved: boolean
+  trail: Trail
+  n: number
   url?: string
 }): string {
-  const head = `${name} ${solved ? checks.length : "X"}/${MAX_CHECKS}`
-  return [head, ...checks.map(squares), ...(url ? [url] : [])].join("\n")
+  const all = marks(trail).map(mark => SQUARE[mark])
+  const lines: string[] = []
+  for (let i = 0; i < all.length; i += n) {
+    lines.push(all.slice(i, i + n).join(""))
+  }
+  return [`${name} ✏️${trail.edits}`, ...lines, ...(url ? [url] : [])].join("\n")
 }

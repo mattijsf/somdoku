@@ -1,15 +1,11 @@
 import type { ReactElement } from "react"
 import type { Key } from "./keys"
 
-/** What a key shows besides its name: a black swatch, a ring for the note, or the erase icon. */
+/** What a key shows besides its name: a black swatch, or the erase icon. */
 export function KeyIcon({ kind }: { kind: Exclude<Key["kind"], "digit"> }): ReactElement {
-  if (kind === "black") {
-    return <span className="swatch black" />
-  }
-  if (kind === "white") {
-    return <span className="swatch ring" />
-  }
-  return (
+  return kind === "black" ? (
+    <span className="swatch black" />
+  ) : (
     <svg
       viewBox="0 0 24 24"
       width="22"

@@ -1,15 +1,14 @@
 import type { ReactElement } from "react"
 import { useTranslation } from "react-i18next"
-import { MAX_CHECKS } from "../../lib/game"
 import { BRAND, number } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
 import { useUiStore } from "../../stores/useUiStore"
 import { Tally } from "./Tally"
 
-/** The name, the puzzle's number, the checks so far as a picture, and the help button. */
+/** The name, the puzzle's number, the picture beside it with the score, and the help button. */
 export function TopBar(): ReactElement {
   const { t } = useTranslation()
-  const used = useGameStore(game => game.checks.length)
+  const edits = useGameStore(game => game.trail.edits)
   const openRules = useUiStore(ui => ui.openRules)
   return (
     <header className="top">
@@ -25,15 +24,10 @@ export function TopBar(): ReactElement {
       <span id="nr" className="nr">
         #{number}
       </span>
-      <span
-        id="tries"
-        className="tries"
-        role="img"
-        aria-label={t("top.checks", { used, max: MAX_CHECKS })}
-      >
+      <span id="tries" className="tries" role="img" aria-label={t("edits", { count: edits })}>
         <Tally />
         <span id="count" className="count" aria-hidden="true">
-          {used}/{MAX_CHECKS}
+          {edits}
         </span>
       </span>
       <button

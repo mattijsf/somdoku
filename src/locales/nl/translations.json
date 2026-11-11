@@ -1,15 +1,14 @@
 {
+  "edits_one": "{{count}} wijziging",
+  "edits_other": "{{count}} wijzigingen",
   "top": {
     "home": "Somdoku, naar de puzzel van vandaag",
-    "help": "Uitleg",
-    "checks": "{{used}} van {{max}} controles gebruikt"
+    "help": "Uitleg"
   },
   "board": {
     "label": "Puzzel",
     "cell": "Rij {{row}}, kolom {{col}}: {{value}}",
-    "cellRight": "Rij {{row}}, kolom {{col}}: {{value}}, goed",
     "empty": "leeg",
-    "white": "cijfer, nog onbekend",
     "black": "zwart"
   },
   "keys": {
@@ -17,19 +16,13 @@
     "digit": "Cijfer {{digit}}",
     "black": "Zwart",
     "blackCell": "Zwart vakje",
-    "note": "Aantekening: hier komt een cijfer, nog onbekend welk",
-    "noteCap": "Cijfer?",
     "erase": "Wis"
-  },
-  "play": {
-    "check": "Controleer"
   },
   "note": {
     "start": "Tik een vakje, en dan een cijfer of zwart.",
     "open_one": "Nog {{count}} vakje leeg.",
     "open_other": "Nog {{count}} vakjes leeg.",
-    "redRows": "De rode rijen kloppen nog niet.",
-    "next": "Dit wordt controle {{number}} van {{max}}."
+    "wrong": "Alles is ingevuld, maar het klopt nog niet."
   },
   "rules": {
     "title": "Zo werkt het",
@@ -39,17 +32,15 @@
     "blacks_other": "In elke rij en in elke kolom zijn precies {{count}} vakjes zwart.",
     "sums": "De getallen aan de rand zijn de sommen van de groepjes cijfers die aan elkaar vastzitten, in volgorde. Een zwart vakje scheidt twee groepjes.",
     "example": "Hier staat de {{k}} alleen, en {{parts}} = {{sum}}.",
-    "check": "Alles ingevuld? Tik <b>Controleer</b>. Je ziet per rij of die goed is; goede rijen blijven staan. Je mag {{max}} keer controleren.",
-    "note": "<b>Cijfer?</b> is een aantekening: hier komt een cijfer, je weet nog niet welk.",
+    "solved": "Staat alles goed, dan is de puzzel vanzelf klaar. Elke stap is af te leiden en de sommen reken je zelf na.",
+    "score": "Je score is het aantal <b>wijzigingen</b>: elke keer dat je een cijfer of zwart vakje aanpast of wist. Nul is foutloos.",
     "noClock": "Er loopt geen tijd. Je kunt later vandaag gewoon verder."
   },
   "done": {
-    "lost": "Niet gelukt",
-    "firstCheck": "In één keer goed",
-    "checks": "Goed in {{used}} controles",
-    "solution": "Hierboven staat de oplossing; rood is wat jij anders had.",
-    "result": "{{head}}. {{lines}}.",
-    "rowsRight": "{{right}} van {{total}} rijen goed",
+    "flawless": "Foutloos",
+    "withEdits_one": "Goed, met {{count}} wijziging",
+    "withEdits_other": "Goed, met {{count}} wijzigingen",
+    "result": "{{head}}. {{first}} vakjes in één keer, {{later}} later veranderd.",
     "share": "Deel",
     "copied": "Gekopieerd",
     "copyAbove": "Kopieer de tekst hierboven",

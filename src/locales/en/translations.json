@@ -1,15 +1,14 @@
 {
+  "edits_one": "{{count}} change",
+  "edits_other": "{{count}} changes",
   "top": {
     "home": "Somdoku, to today's puzzle",
-    "help": "How to play",
-    "checks": "{{used}} of {{max}} checks used"
+    "help": "How to play"
   },
   "board": {
     "label": "Puzzle",
     "cell": "Row {{row}}, column {{col}}: {{value}}",
-    "cellRight": "Row {{row}}, column {{col}}: {{value}}, right",
     "empty": "empty",
-    "white": "digit, not known yet",
     "black": "black"
   },
   "keys": {
@@ -17,19 +16,13 @@
     "digit": "Digit {{digit}}",
     "black": "Black",
     "blackCell": "Black cell",
-    "note": "Note: a digit goes here, not known yet which",
-    "noteCap": "Digit?",
     "erase": "Clear"
-  },
-  "play": {
-    "check": "Check"
   },
   "note": {
     "start": "Tap a cell, then a digit or black.",
     "open_one": "{{count}} cell still empty.",
     "open_other": "{{count}} cells still empty.",
-    "redRows": "The red rows aren't right yet.",
-    "next": "This will be check {{number}} of {{max}}."
+    "wrong": "Everything is filled in, but it isn't right yet."
   },
   "rules": {
     "title": "How it works",
@@ -39,17 +32,15 @@
     "blacks_other": "Every row and every column has exactly {{count}} black cells.",
     "sums": "The numbers along the edge are the sums of the groups of digits that touch, in order. A black cell splits two groups.",
     "example": "Here the {{k}} stands alone, and {{parts}} = {{sum}}.",
-    "check": "All filled in? Tap <b>Check</b>. You see for each row whether it is right; right rows stay as they are. You may check {{max}} times.",
-    "note": "<b>Digit?</b> is a note: a digit goes here, you don't know which yet.",
+    "solved": "Once everything is right, the puzzle is done by itself. Every step can be worked out, and you add up the sums yourself.",
+    "score": "Your score is the number of <b>changes</b>: every time you alter or clear a digit or a black cell. Zero is flawless.",
     "noClock": "There is no clock. You can simply carry on later today."
   },
   "done": {
-    "lost": "Not solved",
-    "firstCheck": "Right first time",
-    "checks": "Right in {{used}} checks",
-    "solution": "The solution is above; red is what you had differently.",
-    "result": "{{head}}. {{lines}}.",
-    "rowsRight": "{{right}} of {{total}} rows right",
+    "flawless": "Flawless",
+    "withEdits_one": "Right, with {{count}} change",
+    "withEdits_other": "Right, with {{count}} changes",
+    "result": "{{head}}. {{first}} cells in one go, {{later}} changed later.",
     "share": "Share",
     "copied": "Copied",
     "copyAbove": "Copy the text above",

@@ -2,34 +2,28 @@ import { useEffect, useRef, useState, type ReactElement } from "react"
 import { flushSync } from "react-dom"
 import { useTranslation } from "react-i18next"
 import { at } from "../../lib/at"
-import { shareText } from "../../lib/game"
-import { name } from "../../stores/today"
+import { marks, shareText } from "../../lib/game"
+import { n, name } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
 import { ShareBubble } from "./ShareBubble"
 import { shareScore } from "./shareScore"
 
-/** The result: the checks it took, and the score drawn as it will be shared. */
+/** The result: the score, the timeline as it will be shared, and the button to share it. */
 export function DoneScreen(): ReactElement {
   const { t } = useTranslation()
   const finished = useGameStore(game => game.finished)
-  const checks = useGameStore(game => game.checks)
+  const trail = useGameStore(game => game.trail)
   const result = useRef<HTMLPreElement>(null)
   const [copyByHand, setCopyByHand] = useState(false) // the clipboard said no: the text is shown to copy
   const [said, setSaid] = useState<"share" | "copied" | "copyAbove">("share") // what the share button says
 
-  const won = finished === "won"
-  const used = checks.length
-  const text = shareText({ name, checks, solved: won })
+  const { edits } = trail
+  const text = shareText({ name, trail, n })
+  const timeline = marks(trail)
 
   useEffect(() => {
-    document.body.style.setProperty("--lines", String(used))
-  }, [used])
-
-  let title = t("done.lost")
-  if (won) {
-    title = used === 1 ? t("done.firstCheck") : t("done.checks", { used })
-  }
-  const note = [won ? "" : t("done.solution"), t("done.tomorrow")].filter(Boolean).join(" ")
+    document.body.style.setProperty("--lines", String(Math.ceil(timeline.length / n)))
+  }, [timeline.length])
 
   const share = async (): Promise<void> => {
     // the score, with the address of the game under it, except while trying it out on this computer
@@ -58,8 +52,10 @@ export function DoneScreen(): ReactElement {
     <section id="done" className="card">
       {finished && (
         <>
-          <h1 id="done-title">{title}</h1>
-          <ShareBubble head={at(text.split("\n"), 0)} checks={checks} />
+          <h1 id="done-title">
+            {edits === 0 ? t("done.flawless") : t("done.withEdits", { count: edits })}
+          </h1>
+          <ShareBubble head={at(text.split("\n"), 0)} trail={timeline} />
           <pre ref={result} id="result" className="result" hidden={!copyByHand}>
             {text}
           </pre>
@@ -67,7 +63,7 @@ export function DoneScreen(): ReactElement {
             {t(`done.${said}`)}
           </button>
           <p id="done-note" className="hint">
-            {note}
+            {t("done.tomorrow")}
           </p>
         </>
       )}

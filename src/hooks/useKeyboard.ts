@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { EMPTY, WHITE } from "../lib/game"
+import { EMPTY } from "../lib/game"
 import { BLACK } from "../lib/puzzle"
 import { k, n, rowOf } from "../stores/today"
 import { isLive, useGameStore } from "../stores/useGameStore"
@@ -12,10 +12,7 @@ const moves = new Map([
   ["ArrowRight", 1],
 ])
 
-/**
- * Arrows move the selection, digits fill in, 0, x or space make a cell black, a dot or o puts a
- * note in it, Backspace wipes it.
- */
+/** Arrows move the selection, digits fill in, 0, x or space make a cell black, Backspace wipes it. */
 export function useKeyboard(): void {
   useEffect(() => {
     const onKey = (event: KeyboardEvent): void => {
@@ -44,8 +41,6 @@ export function useKeyboard(): void {
       } else if (["0", "x", "X", " "].includes(event.key)) {
         event.preventDefault()
         put(BLACK)
-      } else if ([".", "o", "O"].includes(event.key)) {
-        put(WHITE)
       } else if (["Backspace", "Delete"].includes(event.key)) {
         put(EMPTY)
       }
