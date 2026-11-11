@@ -1,5 +1,5 @@
 // What a phone needs to install the game as an app, and how it looks: a manifest the page points
-// to, icons that exist and are the size they say, and one set of icons.
+// to, icons that exist and are the size they say, bars that match the page, and one set of icons.
 import { describe, expect, it } from "vitest"
 import { read, readBytes, sources } from "./files"
 
@@ -49,6 +49,17 @@ describe("the installable app", () => {
 })
 
 describe("the look", () => {
+  it("gives the phone a colour for its bars that does not glare in the dark", () => {
+    // The manifest has one colour for both looks; a light bar under a dark page is the worse of the two.
+    expect(manifest).toMatchObject({ background_color: "#0E1A16", theme_color: "#0E1A16" })
+    const page = read("index.html")
+    expect(page).toContain('<meta name="color-scheme" content="light dark">')
+    expect(page).toContain(
+      '<meta name="theme-color" content="#0E1A16" media="(prefers-color-scheme: dark)">'
+    )
+    expect(read("src/style.css")).toMatch(/html\{[^}]*background:var\(--bg\)/)
+  })
+
   it("draws every icon from one set, Lucide: no emoji, no loose glyphs, no drawn svg", () => {
     const page = [read("index.html"), read("src/style.css"), ...sources().map(([, text]) => text)]
     const shared = read("src/lib/game.ts") // the share text is text, for WhatsApp: emoji belong there

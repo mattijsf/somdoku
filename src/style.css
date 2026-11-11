@@ -18,9 +18,11 @@
   }
 }
 *,*::before,*::after{box-sizing:inherit}
+/* The page colour is on the root itself, not only on the body: an installed app draws under the
+   phone's bars, and what shows there is the root. */
 /* React renders into #root; the layout is that of body, as if #root were not there */
 #root{display:contents}
-html{height:100%;overscroll-behavior:none}
+html{height:100%;overscroll-behavior:none;background:var(--bg);color-scheme:light dark}
 body{margin:0;min-height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
   font-family:"Bricolage Grotesque Variable",ui-rounded,"Segoe UI",system-ui,-apple-system,sans-serif;
   font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%;
