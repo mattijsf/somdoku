@@ -1,4 +1,4 @@
-// The game as a player meets it: the start, filling in, solving and sharing.
+// The game as a player meets it: the start screen, filling in, pausing, solving and sharing.
 import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { App } from "../src/app/App"
@@ -6,7 +6,7 @@ import { i18n } from "../src/i18n"
 import { EMPTY } from "../src/lib/game"
 import { BLACK } from "../src/lib/puzzle"
 import { freshGame, loadGame } from "../src/stores/savedGame"
-import { day, n, solution } from "../src/stores/today"
+import { day, k, n, solution } from "../src/stores/today"
 import { useGameStore } from "../src/stores/useGameStore"
 import { useUiStore } from "../src/stores/useUiStore"
 
@@ -47,14 +47,14 @@ afterEach(() => {
 })
 
 describe("the start", () => {
-  it("starts on a button with the sums covered", () => {
+  it("starts on a button with the puzzle out of sight", () => {
     render(<App />)
     expect(view()).toBe("ready")
     expect(screen.getByRole("button", { name: "Start" })).toBeTruthy()
-    expect(screen.getByText("The sums appear when you start.")).toBeTruthy()
+    expect(screen.getByText("The clock only runs while you play.")).toBeTruthy()
   })
 
-  it("shows the sums after Start, and keeps the game on the device", () => {
+  it("shows the puzzle after Start, and keeps the game on the device", () => {
     render(<App />)
     fireEvent.click(screen.getByRole("button", { name: "Start" }))
     expect(view()).toBe("play")
@@ -62,6 +62,15 @@ describe("the start", () => {
     expect(JSON.parse(localStorage.getItem(`somdoku:${day}`) ?? "{}")).toMatchObject({
       started: true,
     })
+  })
+
+  it("keeps the rules short: three rules, one example and the score", () => {
+    useUiStore.setState({ rulesOpen: true })
+    render(<App />)
+    const dialog = screen.getByRole("dialog", { hidden: true })
+    expect(within(dialog).getAllByRole("listitem", { hidden: true })).toHaveLength(4) // the three rules and the score
+    expect(dialog.querySelector(".steps")?.children).toHaveLength(3)
+    expect(dialog.textContent).toContain(`from 1 to ${k} exactly once`)
   })
 })
 
@@ -185,6 +194,29 @@ describe("holding a cell", () => {
   })
 })
 
+describe("pausing", () => {
+  beforeEach(() => {
+    render(<App />)
+    fireEvent.click(screen.getByRole("button", { name: "Start" }))
+  })
+
+  it("takes the puzzle out of sight with the pause button, and goes on with Continue", () => {
+    fireEvent.click(screen.getByRole("button", { name: "Pause" }))
+    expect(view()).toBe("ready")
+    expect(screen.getByText("Paused. The clock has stopped.")).toBeTruthy()
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }))
+    expect(view()).toBe("play")
+  })
+
+  it("pauses the same way when the game is put away", () => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: true })
+    fireEvent(document, new Event("visibilitychange"))
+    Object.defineProperty(document, "hidden", { configurable: true, value: false })
+    expect(useGameStore.getState().paused).toBe(true)
+    expect(view()).toBe("ready")
+  })
+})
+
 describe("keeping the game", () => {
   it("drops a game kept from an earlier version of today's puzzle, or of the game", () => {
     const kept = { ...freshGame(), cells: [3, ...new Array<null>(n * n - 1).fill(EMPTY)] }
@@ -221,6 +253,9 @@ describe("the end", () => {
         name: /^Somdoku \d+ · \d+:\d\d\. 25 cells in one go, 0 changed later\.$/u,
       })
     ).toBeTruthy()
+    // what the colours say, where they are shown
+    expect(screen.getByText("in one go")).toBeTruthy()
+    expect(screen.getByText("changed later")).toBeTruthy()
 
     await act(async () => {
       fireEvent.click(screen.getByRole("button", { name: "Share" }))
@@ -237,7 +272,9 @@ describe("in Dutch", () => {
     await i18n.changeLanguage("nl")
     render(<App />)
     expect(document.documentElement.lang).toBe("nl")
-    expect(screen.getByRole("button", { name: "Uitleg" })).toBeTruthy()
-    expect(screen.getByText("De sommen verschijnen als je start.")).toBeTruthy()
+    fireEvent.click(screen.getByRole("button", { name: "Start" }))
+    fireEvent.click(screen.getByRole("button", { name: "Pauze" }))
+    expect(screen.getByRole("button", { name: "Verder" })).toBeTruthy()
+    expect(screen.getByText("Gepauzeerd. De klok staat stil.")).toBeTruthy()
   })
 })

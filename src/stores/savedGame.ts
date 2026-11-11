@@ -11,6 +11,7 @@ export interface Game {
   cells: Value[]
   trail: Trail
   started: boolean
+  paused: boolean
   active: number
   finished: boolean
 }
@@ -22,7 +23,8 @@ export const freshGame = (): Game => ({
   sums,
   cells: new Array<Value>(n * n).fill(EMPTY),
   trail: freshTrail(n * n), // how it went: the order of filling and what was altered later
-  started: false, // the sums stay covered until Start: looking at them is playing
+  started: false, // the puzzle stays out of sight until Start: looking at it is playing
+  paused: false, // out of sight again, with the clock stopped, until Continue
   active: 0, // ms played so far, the score
   finished: false,
 })
@@ -77,6 +79,7 @@ export function loadGame(): Game {
         trail,
         active,
         started: saved.started === true,
+        paused: saved.paused === true,
         finished: saved.finished === true,
       }
     }
@@ -86,7 +89,15 @@ export function loadGame(): Game {
   return freshGame()
 }
 
-export function saveGame({ sums: played, cells, trail, started, active, finished }: Game): void {
-  const game: Game = { sums: played, cells, trail, started, active, finished }
+export function saveGame({
+  sums: played,
+  cells,
+  trail,
+  started,
+  paused,
+  active,
+  finished,
+}: Game): void {
+  const game: Game = { sums: played, cells, trail, started, paused, active, finished }
   store(storeKey(day), JSON.stringify(game))
 }

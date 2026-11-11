@@ -1,4 +1,4 @@
-import { Check, Pencil, Rabbit, Timer } from "lucide-react"
+import { Timer } from "lucide-react"
 import type { ReactElement } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { BLACK } from "../../lib/puzzle"
@@ -11,7 +11,7 @@ const example = {
   sums: [k, (k * (k - 1)) / 2],
 }
 
-/** The three rules, one example, and how a game goes. */
+/** Short on purpose: the three rules, one example, and what the score is. The rest shows itself. */
 export function Rules(): ReactElement {
   const { t } = useTranslation()
   return (
@@ -39,29 +39,11 @@ export function Rules(): ReactElement {
       <ul className="legend">
         <li>
           <span className="swatch" aria-hidden="true">
-            <Check className="icon" aria-hidden="true" />
-          </span>
-          <span>{t("rules.solved")}</span>
-        </li>
-        <li>
-          <span className="swatch" aria-hidden="true">
             <Timer className="icon" aria-hidden="true" />
           </span>
           <span>
             <Trans i18nKey="rules.score" components={{ b: <b /> }} />
           </span>
-        </li>
-        <li>
-          <span className="swatch" aria-hidden="true">
-            <Pencil className="icon" aria-hidden="true" />
-          </span>
-          <span>{t("rules.changed")}</span>
-        </li>
-        <li>
-          <span className="swatch" aria-hidden="true">
-            <Rabbit className="icon" aria-hidden="true" />
-          </span>
-          <span>{t("rules.quick")}</span>
         </li>
       </ul>
     </>

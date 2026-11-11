@@ -21,7 +21,7 @@ files plus `tsc -b`, and commitlint on the message (Conventional Commits); on pu
   1 to 4, one black cell per row and column. A day's puzzle comes from its date, so changing the
   generator changes every day.
 - `src/stores/`: zustand stores for the game and the UI. The game is kept in `localStorage`.
-- `src/features/`: the screens (`play`, `done`), the top bar and the rules.
+- `src/features/`: the screens (`ready`, `play`, `done`), the top bar and the rules.
 - `src/hooks/`, `src/utils/`: shared pieces, the clock and keyboard.
 - `src/locales/`: English and Dutch translations (react-i18next).
 - `src/sw.ts`: the service worker, so the game installs as an app and works offline.

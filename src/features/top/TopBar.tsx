@@ -1,4 +1,4 @@
-import { Timer } from "lucide-react"
+import { Pause, Timer } from "lucide-react"
 import type { ReactElement } from "react"
 import { useTranslation } from "react-i18next"
 import { clock, marks } from "../../lib/game"
@@ -7,12 +7,13 @@ import { useGameStore } from "../../stores/useGameStore"
 import { useUiStore } from "../../stores/useUiStore"
 import { Tally } from "./Tally"
 
-/** The name, the puzzle's number, the picture beside it, and the help button. */
+/** The name, the puzzle's number, the picture beside it, and the pause and help buttons. */
 export function TopBar(): ReactElement {
   const { t } = useTranslation()
   const done = useGameStore(game => game.finished)
   const active = useGameStore(game => game.active)
   const filled = useGameStore(game => marks(game.trail).length)
+  const pause = useGameStore(game => game.pause)
   const openRules = useUiStore(ui => ui.openRules)
   // the time is only shown once the game is over: no clock to keep an eye on while playing
   const time = clock(active / 1000)
@@ -44,6 +45,17 @@ export function TopBar(): ReactElement {
           <span id="count">{done ? time : ""}</span>
         </span>
       </span>
+      <button
+        id="pause"
+        className="round"
+        type="button"
+        aria-label={t("top.pause")}
+        onClick={pause}
+      >
+        <span data-icon="pause">
+          <Pause className="icon" aria-hidden="true" />
+        </span>
+      </button>
       <button
         id="help"
         className="round"

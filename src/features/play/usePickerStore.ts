@@ -18,7 +18,7 @@ export const usePickerStore = create<PickerStore>()(() => ({
   lit: -1,
 }))
 
-// The end of the game puts the row away.
+// A pause or the end of the game puts the row away.
 useGameStore.subscribe(game => {
   if (!isLive(game) && usePickerStore.getState().open !== null) {
     usePickerStore.setState({ open: null })

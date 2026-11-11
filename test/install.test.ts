@@ -60,9 +60,9 @@ describe("the look", () => {
     expect(read("src/style.css")).toMatch(/html\{[^}]*background:var\(--bg\)/)
   })
 
-  it("starts with the sums covered, and has no clock to look at while playing", () => {
+  it("starts with the puzzle out of sight, and has no clock to look at while playing", () => {
     const style = read("src/style.css")
-    expect(style).toContain('body[data-view="ready"] .clue span{visibility:hidden}')
+    expect(style).toContain('body[data-view="ready"] #play') // the puzzle is not shown before Start
     expect(style).toContain('body:not([data-view="done"]) .count{display:none}')
   })
 

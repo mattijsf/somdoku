@@ -1,12 +1,17 @@
 {
+  "dateLocale": "nl-NL",
   "solvedIn": "Opgelost in {{time}}",
   "top": {
     "home": "Somdoku, naar de puzzel van vandaag",
+    "pause": "Pauze",
     "help": "Uitleg",
     "filled": "{{filled}} van {{total}} vakjes ingevuld"
   },
   "ready": {
-    "start": "Start"
+    "start": "Start",
+    "resume": "Verder",
+    "paused": "Gepauzeerd. De klok staat stil.",
+    "clock": "De klok loopt alleen terwijl je speelt."
   },
   "board": {
     "label": "Puzzel",
@@ -22,7 +27,6 @@
     "erase": "Wis"
   },
   "note": {
-    "covered": "De sommen verschijnen als je start.",
     "start": "Tik een vakje, of houd het ingedrukt.",
     "open_one": "Nog {{count}} vakje leeg.",
     "open_other": "Nog {{count}} vakjes leeg.",
@@ -30,19 +34,18 @@
   },
   "rules": {
     "title": "Zo werkt het",
-    "begin": "Begin",
-    "digits": "In elke rij en in elke kolom staat elk cijfer van 1 tot en met {{k}} precies één keer.",
-    "blacks_one": "In elke rij en in elke kolom is precies één vakje zwart.",
-    "blacks_other": "In elke rij en in elke kolom zijn precies {{count}} vakjes zwart.",
-    "sums": "De getallen aan de rand zijn de sommen van de groepjes cijfers die aan elkaar vastzitten, in volgorde. Een zwart vakje scheidt twee groepjes.",
+    "gotIt": "Begrepen",
+    "digits": "In elke rij en kolom staat elk cijfer van 1 tot en met {{k}} precies één keer.",
+    "blacks_one": "In elke rij en kolom is precies één vakje zwart.",
+    "blacks_other": "In elke rij en kolom zijn precies {{count}} vakjes zwart.",
+    "sums": "De getallen aan de rand zijn de sommen van de groepjes cijfers tussen de zwarte vakjes, in volgorde.",
     "example": "Hier staat de {{k}} alleen, en {{parts}} = {{sum}}.",
-    "solved": "Staat alles goed, dan is de puzzel vanzelf klaar. Elke stap is af te leiden en de sommen reken je zelf na.",
-    "score": "Je score is je <b>tijd</b>. De klok loopt vanaf Start en alleen terwijl het spel open is; je ziet hem pas na afloop. Wegleggen en later verder kost dus niets.",
-    "changed": "In het plaatje dat je deelt is een vakje geel als je het later hebt aangepast.",
-    "quick": "Sneller invullen: houd een vakje ingedrukt, schuif naar een cijfer of zwart en laat los."
+    "score": "Je score is je <b>tijd</b>. De klok staat stil als je pauzeert of het spel weglegt."
   },
   "done": {
     "result": "{{head}}. {{first}} vakjes in één keer, {{later}} later veranderd.",
+    "firstGo": "in één keer",
+    "changedLater": "later aangepast",
     "share": "Deel",
     "copied": "Gekopieerd",
     "copyAbove": "Kopieer de tekst hierboven",

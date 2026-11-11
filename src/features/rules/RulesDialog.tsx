@@ -37,7 +37,7 @@ export function RulesDialog(): ReactElement {
           <Rules />
         </div>
         <form method="dialog">
-          <button className="btn primary">{t("rules.begin")}</button>
+          <button className="btn primary">{t("rules.gotIt")}</button>
         </form>
       </div>
     </dialog>

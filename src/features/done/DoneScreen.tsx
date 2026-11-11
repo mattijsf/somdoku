@@ -55,6 +55,17 @@ export function DoneScreen(): ReactElement {
         <>
           <h1 id="done-title">{t("solvedIn", { time: clock(seconds) })}</h1>
           <ShareBubble head={at(text.split("\n"), 0)} trail={timeline} />
+          {/* what the colours say, here where they are looked at, not in the rules */}
+          <p className="hint colours">
+            <span>
+              <i className="g" />
+              {t("done.firstGo")}
+            </span>
+            <span>
+              <i className="y" />
+              {t("done.changedLater")}
+            </span>
+          </p>
           <pre ref={result} id="result" className="result" hidden={!copyByHand}>
             {text}
           </pre>

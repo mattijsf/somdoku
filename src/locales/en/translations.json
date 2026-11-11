@@ -1,12 +1,17 @@
 {
+  "dateLocale": "en-GB",
   "solvedIn": "Solved in {{time}}",
   "top": {
     "home": "Somdoku, to today's puzzle",
+    "pause": "Pause",
     "help": "How to play",
     "filled": "{{filled}} of {{total}} cells filled in"
   },
   "ready": {
-    "start": "Start"
+    "start": "Start",
+    "resume": "Continue",
+    "paused": "Paused. The clock has stopped.",
+    "clock": "The clock only runs while you play."
   },
   "board": {
     "label": "Puzzle",
@@ -22,7 +27,6 @@
     "erase": "Clear"
   },
   "note": {
-    "covered": "The sums appear when you start.",
     "start": "Tap a cell, or hold it.",
     "open_one": "{{count}} cell still empty.",
     "open_other": "{{count}} cells still empty.",
@@ -30,19 +34,18 @@
   },
   "rules": {
     "title": "How it works",
-    "begin": "Start",
-    "digits": "Every row and every column holds each digit from 1 to {{k}} exactly once.",
-    "blacks_one": "Every row and every column has exactly one black cell.",
-    "blacks_other": "Every row and every column has exactly {{count}} black cells.",
-    "sums": "The numbers along the edge are the sums of the groups of digits that touch, in order. A black cell splits two groups.",
+    "gotIt": "Got it",
+    "digits": "Every row and column holds each digit from 1 to {{k}} exactly once.",
+    "blacks_one": "Every row and column has exactly one black cell.",
+    "blacks_other": "Every row and column has exactly {{count}} black cells.",
+    "sums": "The numbers along the edge are the sums of the groups of digits between the black cells, in order.",
     "example": "Here the {{k}} stands alone, and {{parts}} = {{sum}}.",
-    "solved": "Once everything is right, the puzzle is done by itself. Every step can be worked out, and you add up the sums yourself.",
-    "score": "Your score is your <b>time</b>. The clock runs from Start and only while the game is open; you only see it afterwards. Putting it away and going on later costs nothing.",
-    "changed": "In the picture you share, a cell is yellow if you changed it later.",
-    "quick": "Fill in faster: hold a cell, slide to a digit or black, and let go."
+    "score": "Your score is your <b>time</b>. The clock stops when you pause or put the game away."
   },
   "done": {
     "result": "{{head}}. {{first}} cells in one go, {{later}} changed later.",
+    "firstGo": "in one go",
+    "changedLater": "changed later",
     "share": "Share",
     "copied": "Copied",
     "copyAbove": "Copy the text above",

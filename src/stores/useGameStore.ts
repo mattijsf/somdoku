@@ -22,32 +22,36 @@ export interface GameStore extends Game {
   select: (i: number) => void
   put: (value: Value) => void
   start: () => void
+  pause: () => void
   tick: () => void
 }
 
-/** The puzzle can be played on: started, not finished. */
-export const isLive = (game: Game): boolean => game.started && !game.finished
+/** The puzzle is in sight and can be played on: started, not paused, not finished. */
+export const isLive = (game: Game): boolean => game.started && !game.paused && !game.finished
 /** The clock runs: the game is live and on screen. */
 export const isPlaying = (game: Game): boolean => isLive(game) && !document.hidden
 
-/** Before Start the puzzle is there with its sums covered; afterwards the result. */
-export function viewOf({ started, finished, showResult }: GameStore): View {
+/** The start screen doubles as the pause screen: the puzzle out of sight, one button to go on. */
+export function viewOf({ started, paused, finished, showResult }: GameStore): View {
   if (finished) {
     return showResult ? "done" : "play"
   }
-  return started ? "play" : "ready"
+  return !started || paused ? "ready" : "play"
 }
 
-// The score is the time spent playing. It counts from Start and only while the game is on
-// screen: put the phone away and the clock stops, so a game can be spread over the day. It is
-// not shown while playing. Time is added a tick at a time; a gap longer than a few seconds means
-// the page was asleep, and is not counted.
+// The score is the time spent playing. It counts from Start and only while the puzzle is in
+// sight: pause, or put the phone away, and the clock stops, so a game can be spread over the day.
+// It is not shown while playing. Time is added a tick at a time; a gap longer than a few seconds
+// means the page was asleep, and is not counted.
 let last: number | null = null // when the clock was last read while running
 
 const kept = loadGame()
 
 export const useGameStore = create<GameStore>()((set, get) => ({
   ...kept,
+  // Coming back to a game that was under way always lands on the pause screen: the clock starts
+  // again when the player says so, not the moment the page happens to open.
+  paused: kept.paused || (kept.started && !kept.finished),
   selected: null,
   justFilled: null,
   tapped: null,
@@ -101,13 +105,26 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     }
   },
 
-  // Start: the sums come into sight and the clock runs.
+  // Start, and Continue after a pause: the puzzle comes into sight and the clock runs.
   start: (): void => {
-    if (get().started) {
+    const game = get()
+    if (game.finished || (game.started && !game.paused)) {
       return
     }
-    set({ started: true })
+    set({ started: true, paused: false })
     get().tick()
+    saveGame(get())
+  },
+
+  /** Stops the clock and takes the puzzle out of sight, until Continue. Pausing with the puzzle still there would be free time to think. */
+  pause: (): void => {
+    get().tick()
+    const game = get()
+    if (!game.started || game.paused || game.finished) {
+      return
+    }
+    last = null
+    set({ paused: true, selected: null })
     saveGame(get())
   },
 

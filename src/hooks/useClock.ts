@@ -5,12 +5,13 @@ import { day } from "../stores/today"
 import { isPlaying, useGameStore } from "../stores/useGameStore"
 
 /**
- * Runs the clock while the game is on screen, and keeps it when the game is put away. An
- * installed app stays open for days; coming back to it on a later day starts that day's puzzle.
+ * Runs the clock while the game is on screen. Putting the game away pauses it: the same pause as
+ * the button, not a second kind. An installed app stays open for days; coming back to it on a
+ * later day starts that day's puzzle.
  */
 export function useClock(): void {
   useEffect(() => {
-    const { tick } = useGameStore.getState()
+    const { tick, pause } = useGameStore.getState()
     tick() // a game that was under way picks the clock up again
     let beats = 0
     const timer = setInterval(() => {
@@ -20,25 +21,19 @@ export function useClock(): void {
         saveGame(game) // so that a phone that dies takes little time with it
       }
     }, 1000)
-    const putAway = (): void => {
-      tick()
-      const game = useGameStore.getState()
-      if (game.started && !game.finished) {
-        saveGame(game)
-      }
-    }
     const onVisibility = (): void => {
-      putAway()
-      if (!document.hidden && dayString() !== day) {
+      if (document.hidden) {
+        pause()
+      } else if (dayString() !== day) {
         location.reload()
       }
     }
     document.addEventListener("visibilitychange", onVisibility)
-    addEventListener("pagehide", putAway)
+    addEventListener("pagehide", pause)
     return (): void => {
       clearInterval(timer)
       document.removeEventListener("visibilitychange", onVisibility)
-      removeEventListener("pagehide", putAway)
+      removeEventListener("pagehide", pause)
     }
   }, [])
 }

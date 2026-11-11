@@ -17,6 +17,11 @@ describe("the translations", () => {
     expect(keysOf(dutch).sort()).toEqual(keysOf(english).sort())
   })
 
+  it("say what the colours of the picture mean, in Dutch as before", () => {
+    expect(i18n.t("done.firstGo", { lng: "nl" })).toBe("in één keer")
+    expect(i18n.t("done.changedLater", { lng: "nl" })).toBe("later aangepast")
+  })
+
   it("have no button to check with and no notes: the grid being right is the end", () => {
     const words = [english, dutch]
       .flatMap(tree => keysOf(tree).map(key => i18n.t(key as never)))
@@ -25,6 +30,6 @@ describe("the translations", () => {
   })
 
   it("fall back to English for a language the game does not speak", () => {
-    expect(i18n.t("done.share", { lng: "fr" })).toBe("Share")
+    expect(i18n.t("ready.resume", { lng: "fr" })).toBe("Continue")
   })
 })

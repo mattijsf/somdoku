@@ -10,12 +10,9 @@ export function Note(): ReactElement {
   const open = useGameStore(game => game.cells.filter(value => !isFilled(value)).length)
   const selected = useGameStore(game => game.selected)
   const done = useGameStore(game => game.finished)
-  const started = useGameStore(game => game.started)
 
   let text = ""
-  if (!started) {
-    text = t("note.covered")
-  } else if (!done) {
+  if (!done) {
     if (selected === null && open === n * n) {
       text = t("note.start")
     } else {
