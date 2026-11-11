@@ -2,7 +2,7 @@
 // &maat=4 or 6).
 import { dailyPuzzle, dayString, practicePuzzle, puzzleNumber } from "../lib/game"
 
-export const BRAND = "Sommetje"
+export const BRAND = "Somdoku"
 const query = new URLSearchParams(location.search)
 /** The number of the practice puzzle, or null for today's. */
 export const practice = query.has("oefen")

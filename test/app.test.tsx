@@ -48,7 +48,7 @@ describe("filling in", () => {
     expect(view()).toBe("play")
     expect(document.querySelectorAll(".cell")).toHaveLength(n * n)
     fill(0, 3)
-    expect(JSON.parse(localStorage.getItem(`sommetje:${day}`) ?? "{}")).toMatchObject({
+    expect(JSON.parse(localStorage.getItem(`somdoku:${day}`) ?? "{}")).toMatchObject({
       cells: [3, ...new Array<null>(n * n - 1).fill(EMPTY)],
       checks: [],
       finished: null,
@@ -141,7 +141,7 @@ describe("checking", () => {
       await vi.advanceTimersByTimeAsync(100)
     })
     const [[shared]] = writeText.mock.calls as unknown as [[string]]
-    expect(shared).toMatch(/^Sommetje \d+ 1\/6\n🟩{5}$/u) // no address while trying it out here
+    expect(shared).toMatch(/^Somdoku \d+ 1\/6\n🟩{5}$/u) // no address while trying it out here
     expect(screen.getByRole("button", { name: "Copied" })).toBeTruthy()
   })
 })

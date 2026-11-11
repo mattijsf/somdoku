@@ -42,6 +42,14 @@ describe("puzzles", () => {
     }
   })
 
+  it("stay the same from one version to the next", () => {
+    // Puzzle 1 as it went online. If this fails, the generator or the seed changed, and with it
+    // every day's puzzle.
+    const { rows, cols } = dailyPuzzle("2026-11-11")
+    expect(rows).toEqual([[15], [6, 4], [13], [5, 5], [8, 3]])
+    expect(cols).toEqual([[4, 7], [11, 1], [8, 5], [1, 7], [15]])
+  })
+
   it("come in other sizes for practice", () => {
     for (const n of [4, 5, 6]) {
       expect(practicePuzzle(1, n).solution).toHaveLength(n)
@@ -82,18 +90,18 @@ describe("a game", () => {
       [true, false, true],
       [true, true, true],
     ]
-    expect(shareText({ name: "Sommetje 12", checks, solved: true })).toBe(
-      "Sommetje 12 2/6\n🟩⬛🟩\n🟩🟩🟩"
+    expect(shareText({ name: "Somdoku 12", checks, solved: true })).toBe(
+      "Somdoku 12 2/6\n🟩⬛🟩\n🟩🟩🟩"
     )
     expect(
       shareText({
-        name: "Sommetje 12",
+        name: "Somdoku 12",
         checks: new Array<boolean[]>(MAX_CHECKS).fill([true, false, false]),
         solved: false,
       })
-    ).toMatch(/^Sommetje 12 X\/6\n(🟩⬛⬛\n){5}🟩⬛⬛$/u)
+    ).toMatch(/^Somdoku 12 X\/6\n(🟩⬛⬛\n){5}🟩⬛⬛$/u)
     expect(
-      shareText({ name: "Sommetje 12", checks: [[true]], solved: true, url: "https://x.nl/" })
+      shareText({ name: "Somdoku 12", checks: [[true]], solved: true, url: "https://x.nl/" })
         .split("\n")
         .at(-1)
     ).toBe("https://x.nl/")

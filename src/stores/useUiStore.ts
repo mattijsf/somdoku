@@ -9,7 +9,7 @@ interface UiStore {
 }
 
 // The first visit starts with the rules.
-const RULES_SEEN = "sommetje:uitleg"
+const RULES_SEEN = "somdoku:uitleg"
 function firstVisit(): boolean {
   let seen = true
   try {

@@ -10,7 +10,7 @@ export interface Game {
   finished: "won" | "lost" | null
 }
 
-const storeKey = practice ? `sommetje:oefen:${size}:${practice}` : `sommetje:${day}`
+const storeKey = practice ? `somdoku:oefen:${size}:${practice}` : `somdoku:${day}`
 
 export const freshGame = (): Game => ({
   cells: new Array<Value>(n * n).fill(EMPTY),

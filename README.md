@@ -1,4 +1,4 @@
-# Sommetje
+# Somdoku
 
 A Japanese sums puzzle every day, made for phones. Everyone gets the same puzzle; afterwards you
 share your score as a picture of squares, as with Wordle. In English and Dutch, following the

@@ -1,4 +1,4 @@
-// What a game of Sommetje is besides the puzzle: which puzzle belongs to which day, what a
+// What a game of Somdoku is besides the puzzle: which puzzle belongs to which day, what a
 // check tells the player, and the message that is shared afterwards. There is no clock: like
 // Woordle, the score is how many tries it took, and a game may be spread over the day.
 
@@ -31,7 +31,10 @@ const utc = (day: string): number => {
 export const puzzleNumber = (day: string): number =>
   Math.round((utc(day) - utc(FIRST_DAY)) / 86400000) + 1
 
-/** Everyone gets the same puzzle on the same day. */
+/**
+ * Everyone gets the same puzzle on the same day. The seed still says "sommetje", the game's first
+ * name: changing it would change every day's puzzle, also for those who are halfway through today's.
+ */
 export const dailyPuzzle = (day: string): Puzzle =>
   generate(hash(`sommetje ${day}`), { n: 5, k: 5, minPasses: 3 })
 
@@ -68,7 +71,7 @@ export const squares = (check: readonly boolean[]): string =>
   check.map(right => (right ? "🟩" : "⬛")).join("")
 
 /**
- * "Sommetje 12 3/6" with a line of squares per check, ready for WhatsApp. The same shape as a
+ * "Somdoku 12 3/6" with a line of squares per check, ready for WhatsApp. The same shape as a
  * Woordle score, and it gives away nothing of the solution.
  */
 export function shareText({

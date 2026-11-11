@@ -1,7 +1,7 @@
 {
   "practiceName": "{{brand}} oefen {{number}}",
   "top": {
-    "home": "Sommetje, naar de puzzel van vandaag",
+    "home": "Somdoku, naar de puzzel van vandaag",
     "help": "Uitleg",
     "practice": "oefen {{number}}",
     "checks": "{{used}} van {{max}} controles gebruikt"

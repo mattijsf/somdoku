@@ -1,7 +1,7 @@
 {
   "practiceName": "{{brand}} practice {{number}}",
   "top": {
-    "home": "Sommetje, to today's puzzle",
+    "home": "Somdoku, to today's puzzle",
     "help": "How to play",
     "practice": "practice {{number}}",
     "checks": "{{used}} of {{max}} checks used"
