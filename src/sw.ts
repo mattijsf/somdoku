@@ -6,6 +6,7 @@ declare const self: ServiceWorkerGlobalScope
 
 const CACHE = "somdoku-1"
 const HOME = self.registration.scope // https://somdoku.nl/
+const PATIENCE = 2500 // ms to wait for a fresh page before the kept copy is shown
 
 /** The files a page names as ./..., as full addresses. */
 const named = (html: string): string[] =>
@@ -70,17 +71,30 @@ self.addEventListener("fetch", event => {
   }
   const url = new URL(request.url)
 
-  // The page, whatever comes after the ? (it is the same page): fresh if possible.
+  // The page, whatever comes after the ? (it is the same page): fresh if it comes quickly. On a
+  // slow or broken connection the kept copy opens after a short wait instead of a long blank
+  // screen; the fresh page is still fetched and kept for the next visit.
   if (request.mode === "navigate" && url.origin + url.pathname === HOME) {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
+    const fresh = fetch(request)
+    event.waitUntil(
+      fresh
+        .then(async response => {
           if (response.ok && !response.redirected) {
-            event.waitUntil(keepPage(response.clone()))
+            await keepPage(response.clone())
           }
-          return response
         })
-        .catch(async () => (await caches.match(HOME)) ?? Response.error())
+        .catch(() => {
+          /* offline: the kept copy stays */
+        })
+    )
+    const kept = caches.match(HOME)
+    const patience = new Promise<undefined>(resolve => {
+      setTimeout(resolve, PATIENCE)
+    })
+    event.respondWith(
+      Promise.race([fresh, patience])
+        .then(async response => response ?? (await kept) ?? fresh) // in time; else the kept copy; else keep waiting
+        .catch(async () => (await kept) ?? Response.error()) // no connection at all
     )
     return
   }
