@@ -23,7 +23,7 @@ describe("the translations", () => {
   })
 
   it("say what Woordle says after copying", () => {
-    expect(i18n.t("done.copied", { lng: "nl" })).toBe("Score gekopieerd. Plak in WhatsApp.")
+    expect(i18n.t("done.copied", { lng: "nl" })).toBe("Score gekopieerd")
   })
 
   it("have no button to check with and no notes: the grid being right is the end", () => {

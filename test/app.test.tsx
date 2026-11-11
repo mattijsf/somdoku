@@ -264,7 +264,7 @@ describe("the end", () => {
     })
     const [[shared]] = writeText.mock.calls as unknown as [[string]]
     expect(shared).toMatch(/^Somdoku \d+ · \d+:\d\d\n(🟩{5}\n){4}🟩{5}$/u)
-    expect(screen.getByRole("status").textContent).toBe("Score copied. Paste it in WhatsApp.")
+    expect(screen.getByRole("status").textContent).toBe("Score copied")
   })
 })
 
