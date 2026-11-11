@@ -109,7 +109,7 @@ describe("filling in", () => {
   })
 
   it("says how many cells are still empty", () => {
-    expect(screen.getByText("Tap a cell, then a digit or black. Or hold a cell.")).toBeTruthy()
+    expect(screen.getByText("Tap a cell, or hold it.")).toBeTruthy()
     fill(0, 1)
     expect(screen.getByText(`${n * n - 1} cells still empty.`)).toBeTruthy()
   })
@@ -237,8 +237,6 @@ describe("in Dutch", () => {
     render(<App />)
     expect(document.documentElement.lang).toBe("nl")
     expect(screen.getByRole("img", { name: "0 wijzigingen" })).toBeTruthy()
-    expect(
-      screen.getByText("Tik een vakje en dan een cijfer of zwart. Of houd een vakje ingedrukt.")
-    ).toBeTruthy()
+    expect(screen.getByText("Tik een vakje, of houd het ingedrukt.")).toBeTruthy()
   })
 })

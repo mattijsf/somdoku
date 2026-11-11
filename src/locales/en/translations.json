@@ -19,10 +19,10 @@
     "erase": "Clear"
   },
   "note": {
-    "start": "Tap a cell, then a digit or black. Or hold a cell.",
+    "start": "Tap a cell, or hold it.",
     "open_one": "{{count}} cell still empty.",
     "open_other": "{{count}} cells still empty.",
-    "wrong": "Everything is filled in, but it isn't right yet."
+    "wrong": "All filled in, but it isn't right yet."
   },
   "rules": {
     "title": "How it works",

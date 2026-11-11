@@ -19,10 +19,10 @@
     "erase": "Wis"
   },
   "note": {
-    "start": "Tik een vakje en dan een cijfer of zwart. Of houd een vakje ingedrukt.",
+    "start": "Tik een vakje, of houd het ingedrukt.",
     "open_one": "Nog {{count}} vakje leeg.",
     "open_other": "Nog {{count}} vakjes leeg.",
-    "wrong": "Alles is ingevuld, maar het klopt nog niet."
+    "wrong": "Alles ingevuld, maar het klopt nog niet."
   },
   "rules": {
     "title": "Zo werkt het",
