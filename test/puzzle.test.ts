@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
 import {
-  BOOK_RULES_FROM,
   EMPTY,
   MAX_CHECKS,
   WHITE,
@@ -43,7 +42,7 @@ describe("puzzles", () => {
 
   it("follow the booklet and can be solved from the clues alone, for a year of days", () => {
     for (let i = 0; i < 365; i++) {
-      const day = new Date(Date.UTC(2026, 10, 12 + i)).toISOString().slice(0, 10)
+      const day = new Date(Date.UTC(2026, 10, 11 + i)).toISOString().slice(0, 10)
       const { n, k, blacks, solution, rows, cols } = dailyPuzzle(day)
       expect([n, k, blacks]).toEqual([5, 4, 1])
       // every row and column: each of 1, 2, 3, 4 once and one black cell
@@ -51,19 +50,18 @@ describe("puzzles", () => {
         expect([...line].sort()).toEqual([0, 1, 2, 3, 4])
       }
       expect(cluesOf(solution)).toEqual({ rows, cols })
-      expect(solve(n, k, rows, cols, blacks)?.grid).toEqual(solution)
+      expect(solve(n, k, rows, cols)?.grid).toEqual(solution)
     }
   })
 
   it("stay the same from one version to the next", () => {
-    // The first puzzles as they went online. If this fails, the generator or the seed changed,
-    // and with it every day's puzzle. Puzzle 1 is from before the booklet's rules.
+    // The first two puzzles. If this fails, the generator or the seed changed, and with it every
+    // day's puzzle: fine while the game is being made, not once people play along every day.
     expect(dailyPuzzle("2026-11-11")).toMatchObject({
-      blacks: null,
-      rows: [[15], [6, 4], [13], [5, 5], [8, 3]],
-      cols: [[4, 7], [11, 1], [8, 5], [1, 7], [15]],
+      blacks: 1,
+      rows: [[10], [1, 9], [6, 4], [5, 5], [10]],
+      cols: [[10], [3, 7], [7, 3], [5, 5], [10]],
     })
-    expect(BOOK_RULES_FROM).toBe("2026-11-12")
     expect(dailyPuzzle("2026-11-12")).toMatchObject({
       blacks: 1,
       rows: [[10], [9, 1], [3, 7], [10], [4, 6]],
@@ -73,7 +71,7 @@ describe("puzzles", () => {
 
   it("have one solution, also when every grid that fits the clues is tried", () => {
     // Without the solver: every way to fill each row, then the columns checked.
-    const { n, k, rows, cols, solution } = dailyPuzzle("2026-11-12")
+    const { n, k, rows, cols, solution } = dailyPuzzle("2026-11-11")
     const same = (a: readonly number[], b: readonly number[]): boolean =>
       a.length === b.length && a.every((v, i) => v === b[i])
     const fillings: Line[] = []
@@ -124,8 +122,8 @@ describe("puzzles", () => {
   })
 
   it("does not call a puzzle with two solutions solved", () => {
-    // 1 2 / 2 1 and 2 1 / 1 2 give the same clues
-    expect(solve(2, 2, [[3], [3]], [[3], [3]])).toBeNull()
+    // one digit and one black cell per line: 1 # / # 1 and # 1 / 1 # give the same clues
+    expect(solve(2, 1, [[1], [1]], [[1], [1]])).toBeNull()
   })
 })
 
@@ -139,7 +137,6 @@ describe("a game", () => {
     expect([...spare([0, 1, 0, 2, 3], 1)].sort()).toEqual([0, 2])
     expect(spare([0, 1, 4, 2, 3], 1).size).toBe(0)
     expect(spare([0, 0, 0, EMPTY, WHITE], 2).size).toBe(3)
-    expect(spare([0, 0, 0, 1, 2], null).size).toBe(0) // the first day's rules set no number
   })
 
   it("points out a digit that is in a line twice", () => {

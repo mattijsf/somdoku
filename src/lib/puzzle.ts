@@ -1,10 +1,10 @@
 // Japanse sommen: the rules, a generator, and a solver that only reasons the way a person does,
 // one row or column at a time. A puzzle that this solver finishes has one solution and needs no guessing.
 //
-// There are two sets of rules. The booklet's, which the game uses: every row and column holds
-// each digit exactly once and a fixed number of black cells (`blacks`), so the grid is as wide as
-// digits plus black cells. And a freer one, from the game's first day (`blacks: null`): a digit at
-// most once, any number of black cells.
+// The rules are the puzzle booklet's: a grid of n by n, the digits 1 to k. Every row and every
+// column holds each digit exactly once; the cells that are left, n - k in every row and column,
+// are black. Beside each row and above each column are the sums of the groups of digits that
+// touch, in order.
 
 import { at } from "./at"
 
@@ -22,7 +22,7 @@ export interface Clues {
 export interface Puzzle extends Clues {
   n: number
   k: number
-  blacks: number | null
+  blacks: number
   solution: Grid
   passes: number
   attempt: number
@@ -30,8 +30,6 @@ export interface Puzzle extends Clues {
 export interface Options {
   n?: number
   k?: number
-  blacks?: number | null
-  blackShare?: number
   minPasses?: number
   maxPasses?: number
 }
@@ -91,12 +89,9 @@ export function cluesOf(grid: Grid): Clues {
 
 const lineCache = new Map<string, Map<string, Line[]>>()
 
-/**
- * Every way to fill a line of n cells with digits 1..k and black cells, by clue. With `blacks`
- * given: each digit once and that many black cells. Without: each digit at most once.
- */
-function linesByClue(n: number, k: number, blacks: number | null = null): Map<string, Line[]> {
-  const id = `${n}/${k}/${String(blacks)}`
+/** Every way to fill a line of n cells with each of the digits 1..k once and black cells, by clue. */
+function linesByClue(n: number, k: number): Map<string, Line[]> {
+  const id = `${n}/${k}`
   const cached = lineCache.get(id)
   if (cached) {
     return cached
@@ -106,7 +101,7 @@ function linesByClue(n: number, k: number, blacks: number | null = null): Map<st
   const every = ((1 << (k + 1)) - 1) & ~1 // all digits used
   const walk = (i: number, used: number): void => {
     if (i === n) {
-      if (blacks !== null && used !== every) {
+      if (used !== every) {
         return
       }
       const key = clueOf(line).join(",")
@@ -143,10 +138,9 @@ export function solve(
   n: number,
   k: number,
   rows: readonly Clue[],
-  cols: readonly Clue[],
-  blacks: number | null = null
+  cols: readonly Clue[]
 ): { grid: Grid; passes: number } | null {
-  const all = linesByClue(n, k, blacks)
+  const all = linesByClue(n, k)
   const lines: { cells: number[]; fits: Line[] }[] = []
   for (let r = 0; r < n; r++) {
     lines.push({
@@ -194,48 +188,11 @@ export function solve(
   return { grid, passes: passes - 1 }
 }
 
-function randomGrid(random: Random, n: number, k: number, blackShare: number): Grid | null {
-  const grid: Grid = []
-  const usedInCol: number[] = new Array<number>(n).fill(0)
-  let blacks = 0
-  for (let r = 0; r < n; r++) {
-    const row: Line = []
-    let usedInRow = 0
-    for (let c = 0; c < n; c++) {
-      const free: number[] = []
-      for (let d = 1; d <= k; d++) {
-        if (!((usedInRow | at(usedInCol, c)) & (1 << d))) {
-          free.push(d)
-        }
-      }
-      if (!free.length || random() < blackShare) {
-        row.push(BLACK)
-        blacks++
-        continue
-      }
-      const digit = at(free, Math.floor(random() * free.length))
-      row.push(digit)
-      usedInRow |= 1 << digit
-      usedInCol[c] = at(usedInCol, c) | (1 << digit)
-    }
-    grid.push(row)
-  }
-  const digitsIn = (line: Line): number => line.filter(value => value > 0).length
-  const thin = (line: Line): boolean => digitsIn(line) < 2
-  if (grid.some(thin) || at(grid, 0).some((_, c) => thin(column(grid, c)))) {
-    return null
-  }
-  if (blacks < n * n * 0.2 || blacks > n * n * 0.44) {
-    return null
-  }
-  return grid
-}
-
 /**
- * A grid by the booklet's rules: a Latin square of n symbols, of which the highest are the black
- * cells. So every row and column gets each digit once and n - k black cells.
+ * A filled grid: a Latin square of n symbols, of which the highest are the black cells. So
+ * every row and column gets each digit once and n - k black cells.
  */
-function bookGrid(random: Random, n: number, k: number): Grid {
+function randomGrid(random: Random, n: number, k: number): Grid {
   const grid: Grid = Array.from({ length: n }, () => new Array<number>(n).fill(0))
   const inRow: number[] = new Array<number>(n).fill(0)
   const inCol: number[] = new Array<number>(n).fill(0)
@@ -274,24 +231,21 @@ function bookGrid(random: Random, n: number, k: number): Grid {
 
 /**
  * The puzzle for a seed: the same on every device. minPasses..maxPasses sets how hard it is.
- * `blacks` picks the rules (see the top of this file); with it, n must be k + blacks.
+ * `blacks` in the result is the number of black cells in every row and column, n - k.
  */
 export function generate(
   seed: number,
-  { n = 5, k = 5, blacks = null, blackShare = 0.3, minPasses = 3, maxPasses = 99 }: Options = {}
+  { n = 5, k = 4, minPasses = 3, maxPasses = 99 }: Options = {}
 ): Puzzle {
   const random = rng(seed)
   for (let attempt = 1; attempt <= 20000; attempt++) {
-    const solution = blacks === null ? randomGrid(random, n, k, blackShare) : bookGrid(random, n, k)
-    if (!solution) {
-      continue
-    }
+    const solution = randomGrid(random, n, k)
     const { rows, cols } = cluesOf(solution)
-    const solved = solve(n, k, rows, cols, blacks)
+    const solved = solve(n, k, rows, cols)
     if (!solved || solved.passes < minPasses || solved.passes > maxPasses) {
       continue
     }
-    return { n, k, blacks, solution, rows, cols, passes: solved.passes, attempt }
+    return { n, k, blacks: n - k, solution, rows, cols, passes: solved.passes, attempt }
   }
   throw new Error(`no puzzle for seed ${seed}`)
 }

@@ -6,14 +6,10 @@ import { blacks, k } from "../../stores/today"
 
 // The example follows the puzzle's own digits: the highest alone, the others together.
 const lower = Array.from({ length: k - 1 }, (_, i) => i + 1)
-const example =
-  blacks === null
-    ? { line: [4, BLACK, 1, 5, BLACK], sums: [4, 6], says: { k: 4, parts: "1 + 5", sum: 6 } }
-    : {
-        line: [k, BLACK, ...lower, ...new Array<number>(blacks - 1).fill(BLACK)],
-        sums: [k, (k * (k - 1)) / 2],
-        says: { k, parts: lower.join(" + "), sum: (k * (k - 1)) / 2 },
-      }
+const example = {
+  line: [k, BLACK, ...lower, ...new Array<number>(blacks - 1).fill(BLACK)],
+  sums: [k, (k * (k - 1)) / 2],
+}
 
 /** The three rules, one example, and how a game goes. */
 export function Rules(): ReactElement {
@@ -21,17 +17,8 @@ export function Rules(): ReactElement {
   return (
     <>
       <ol className="steps">
-        {blacks === null ? (
-          <>
-            <li>{t("rules.fill", { k })}</li>
-            <li>{t("rules.once")}</li>
-          </>
-        ) : (
-          <>
-            <li>{t("rules.digits", { k })}</li>
-            <li>{t("rules.blacks", { count: blacks })}</li>
-          </>
-        )}
+        <li>{t("rules.digits", { k })}</li>
+        <li>{t("rules.blacks", { count: blacks })}</li>
         <li>{t("rules.sums")}</li>
       </ol>
       <div className="example">
@@ -45,7 +32,9 @@ export function Rules(): ReactElement {
             value === BLACK ? <i key={j} className="black" /> : <i key={j}>{value}</i>
           )}
         </div>
-        <p className="hint">{t("rules.example", example.says)}</p>
+        <p className="hint">
+          {t("rules.example", { k, parts: lower.join(" + "), sum: (k * (k - 1)) / 2 })}
+        </p>
       </div>
       <ul className="legend">
         <li>

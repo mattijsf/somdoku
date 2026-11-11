@@ -5,7 +5,7 @@ import { App } from "../src/app/App"
 import { i18n } from "../src/i18n"
 import { EMPTY, WHITE } from "../src/lib/game"
 import { BLACK } from "../src/lib/puzzle"
-import { freshGame } from "../src/stores/savedGame"
+import { freshGame, loadGame } from "../src/stores/savedGame"
 import { day, k, n, solution } from "../src/stores/today"
 import { useGameStore } from "../src/stores/useGameStore"
 import { useUiStore } from "../src/stores/useUiStore"
@@ -118,6 +118,16 @@ describe("filling in", () => {
     fill(0, 1)
     expect(screen.getByText(`${n * n - 1} cells still empty.`)).toBeTruthy()
     expect(screen.getByRole<HTMLButtonElement>("button", { name: "Check" }).disabled).toBe(true)
+  })
+})
+
+describe("keeping the game", () => {
+  it("drops a game kept from an earlier version of today's puzzle", () => {
+    const kept = { ...freshGame(), cells: [3, ...new Array<null>(n * n - 1).fill(EMPTY)] }
+    localStorage.setItem(`somdoku:${day}`, JSON.stringify(kept))
+    expect(loadGame().cells[0]).toBe(3)
+    localStorage.setItem(`somdoku:${day}`, JSON.stringify({ ...kept, sums: "[[15],[6,4]]" }))
+    expect(loadGame().cells[0]).toBe(EMPTY)
   })
 })
 

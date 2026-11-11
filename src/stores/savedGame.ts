@@ -1,9 +1,12 @@
 // The game so far. Kept on the device: there is no clock, so it can be finished later today.
+// `sums` says which puzzle it was played on: when the puzzle of a day changes, as it may while
+// the game is still being made, a game kept from the earlier one is dropped.
 import { EMPTY, WHITE, type Check, type Value } from "../lib/game"
 import { isRecord, kept, store } from "../utils/storage"
-import { day, k, n, practice, size } from "./today"
+import { day, k, n, practice, puzzle, size } from "./today"
 
 export interface Game {
+  sums: string
   cells: Value[]
   checks: Check[]
   stale: boolean[]
@@ -11,8 +14,10 @@ export interface Game {
 }
 
 const storeKey = practice ? `somdoku:oefen:${size}x${k}:${practice}` : `somdoku:${day}`
+const sums = JSON.stringify([puzzle.rows, puzzle.cols])
 
 export const freshGame = (): Game => ({
+  sums,
   cells: new Array<Value>(n * n).fill(EMPTY),
   checks: [], // per check: for each row, whether it was right
   stale: new Array<boolean>(n).fill(false), // rows changed since the last check
@@ -36,6 +41,7 @@ export function loadGame(): Game {
     }
     const { cells, checks, stale, finished } = saved
     if (
+      saved.sums === sums &&
       Array.isArray(cells) &&
       cells.length === n * n &&
       cells.every(fits) &&
@@ -43,6 +49,7 @@ export function loadGame(): Game {
       checks.every(isCheck)
     ) {
       return {
+        sums,
         cells,
         checks,
         stale: isFlags(stale, n) ? stale : freshGame().stale,
@@ -55,7 +62,7 @@ export function loadGame(): Game {
   return freshGame()
 }
 
-export function saveGame({ cells, checks, stale, finished }: Game): void {
-  const game: Game = { cells, checks, stale, finished }
+export function saveGame({ sums: played, cells, checks, stale, finished }: Game): void {
+  const game: Game = { sums: played, cells, checks, stale, finished }
   store(storeKey, JSON.stringify(game))
 }

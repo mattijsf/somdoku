@@ -32,30 +32,16 @@ export const puzzleNumber = (day: string): number =>
   Math.round((utc(day) - utc(FIRST_DAY)) / 86400000) + 1
 
 /**
- * The day the game went over to the booklet's rules: every digit exactly once and one black
- * cell in every row and column, on 5 by 5 with the digits 1 to 4. The first day's puzzle was freer
- * (1 to 5, a digit at most once, any number of black cells) and stays as it was.
- */
-export const BOOK_RULES_FROM = "2026-11-12"
-
-/**
- * Everyone gets the same puzzle on the same day. The seed still says "sommetje", the game's first
- * name: changing it would change every day's puzzle, also for those who are halfway through today's.
+ * Everyone gets the same puzzle on the same day: 5 by 5 with the digits 1 to 4, so one black
+ * cell in every row and column. The seed still says "sommetje", the game's first name.
  */
 export const dailyPuzzle = (day: string): Puzzle =>
-  day < BOOK_RULES_FROM
-    ? generate(hash(`sommetje ${day}`), { n: 5, k: 5, minPasses: 3 })
-    : generate(hash(`sommetje ${day}`), { n: 5, k: 4, blacks: 1, minPasses: 3 })
+  generate(hash(`sommetje ${day}`), { n: 5, k: 4, minPasses: 3 })
 
-/** Practice puzzles, by the booklet's rules: 4 by 4 with 1-3, 5 by 5 with 1-4, 6 by 6 with 1-4 and two black cells. */
+/** Practice puzzles: 4 by 4 with 1-3, 5 by 5 with 1-4, 6 by 6 with 1-4 and two black cells in every row and column. */
 export function practicePuzzle(number: number, n = 5): Puzzle {
-  const blacks = n === 6 ? 2 : 1
-  return generate(hash(`oefen ${n} ${number}`), {
-    n,
-    k: n - blacks,
-    blacks,
-    minPasses: n === 5 ? 3 : 2,
-  })
+  const k = n === 6 ? 4 : n - 1
+  return generate(hash(`oefen ${n} ${number}`), { n, k, minPasses: n === 5 ? 3 : 2 })
 }
 
 export const isFilled = (value: Value): boolean => value !== EMPTY && value !== WHITE
@@ -72,9 +58,9 @@ export function doubles(values: readonly Value[]): Set<number> {
 }
 
 /** The black cells in a line that has more of them than the rules allow: also plain to see. */
-export function spare(values: readonly Value[], blacks: number | null): Set<number> {
+export function spare(values: readonly Value[], blacks: number): Set<number> {
   const places = values.flatMap((value, i) => (value === 0 ? [i] : []))
-  return new Set(blacks !== null && places.length > blacks ? places : [])
+  return new Set(places.length > blacks ? places : [])
 }
 
 /** What a check tells the player: for each row, whether all of it is right. Not which cell is wrong. */

@@ -79,17 +79,13 @@ export function Board(): ReactElement {
     >
       {/* The corner says what goes in, as the booklet does at the top of the page: which digits,
           and how many black cells in every row and column. */}
-      {blacks === null ? (
-        <div />
-      ) : (
-        <div className="recipe" role="img" aria-label={t("board.recipe", { k, count: blacks })}>
-          <span>{`1–${k}`}</span>
-          <span>
-            <i />
-            {blacks}
-          </span>
-        </div>
-      )}
+      <div className="recipe" role="img" aria-label={t("board.recipe", { k, count: blacks })}>
+        <span>{`1–${k}`}</span>
+        <span>
+          <i />
+          {blacks}
+        </span>
+      </div>
       {puzzle.cols.map((clue, c) => (
         <ClueLine
           key={c}

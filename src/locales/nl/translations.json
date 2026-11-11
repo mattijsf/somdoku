@@ -38,8 +38,6 @@
   "rules": {
     "title": "Zo werkt het",
     "begin": "Begin",
-    "fill": "Vul elk vakje met een cijfer van 1 tot en met {{k}}, of maak het zwart.",
-    "once": "In een rij of kolom staat elk cijfer hooguit één keer.",
     "digits": "In elke rij en in elke kolom staat elk cijfer van 1 tot en met {{k}} precies één keer.",
     "blacks_one": "In elke rij en in elke kolom is precies één vakje zwart.",
     "blacks_other": "In elke rij en in elke kolom zijn precies {{count}} vakjes zwart.",

@@ -38,8 +38,6 @@
   "rules": {
     "title": "How it works",
     "begin": "Start",
-    "fill": "Fill every cell with a digit from 1 to {{k}}, or make it black.",
-    "once": "A digit appears at most once in a row or column.",
     "digits": "Every row and every column holds each digit from 1 to {{k}} exactly once.",
     "blacks_one": "Every row and every column has exactly one black cell.",
     "blacks_other": "Every row and every column has exactly {{count}} black cells.",
