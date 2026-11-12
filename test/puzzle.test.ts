@@ -219,11 +219,6 @@ describe("a game", () => {
     expect(shareText({ name: "Somdoku 12", seconds: 222, trail, n: 2 })).toBe(
       "Somdoku 12 · 3:42\n🟩🟨\n🟩🟩"
     )
-    expect(
-      shareText({ name: "Somdoku 12", seconds: 222, trail, n: 2, url: "https://x.nl/" })
-        .split("\n")
-        .at(-1)
-    ).toBe("https://x.nl/")
   })
 
   it("shows a game without a change as nothing but green", () => {

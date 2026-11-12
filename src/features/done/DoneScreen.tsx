@@ -21,6 +21,7 @@ export function DoneScreen(): ReactElement {
   const [hint, setHint] = useState(false)
 
   const seconds = active / 1000
+  // The score and nothing after it, as Woordle shares it: no link under the squares.
   const text = shareText({ name, seconds, trail, n })
   const timeline = marks(trail)
 
@@ -29,11 +30,7 @@ export function DoneScreen(): ReactElement {
   }, [timeline.length])
 
   const share = async (): Promise<void> => {
-    // the score, with the address of the game under it, except while trying it out on this computer
-    const hosted = !["localhost", "127.0.0.1"].includes(location.hostname)
-    const shared = await shareScore(
-      text + (hosted ? `\n${location.origin}${location.pathname}` : "")
-    )
+    const shared = await shareScore(text)
     if (shared === "copied") {
       showToast(t("done.copied"))
     } else if (shared === "failed") {

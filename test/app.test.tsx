@@ -264,6 +264,7 @@ describe("the end", () => {
     })
     const [[shared]] = writeText.mock.calls as unknown as [[string]]
     expect(shared).toMatch(/^Somdoku \d+ · \d+:\d\d\n(🟩{5}\n){4}🟩{5}$/u)
+    expect(shared).not.toMatch(/https?:|somdoku\.nl/) // the score alone, no link under it
     expect(screen.getByRole("status").textContent).toBe("Score copied")
   })
 })

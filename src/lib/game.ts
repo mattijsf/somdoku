@@ -134,24 +134,22 @@ export const marks = (trail: Trail): Mark[] =>
 
 const SQUARE: Record<Mark, string> = { g: "🟩", y: "🟨" }
 
-/** "Somdoku 12 · 3:42" with the timeline under it, n squares to a line, ready for WhatsApp. */
+/** "Somdoku 12 · 3:42" with the timeline under it, n squares to a line, and no link. */
 export function shareText({
   name,
   seconds,
   trail,
   n,
-  url,
 }: {
   name: string
   seconds: number
   trail: Trail
   n: number
-  url?: string
 }): string {
   const all = marks(trail).map(mark => SQUARE[mark])
   const lines: string[] = []
   for (let i = 0; i < all.length; i += n) {
     lines.push(all.slice(i, i + n).join(""))
   }
-  return [`${name} · ${clock(seconds)}`, ...lines, ...(url ? [url] : [])].join("\n")
+  return [`${name} · ${clock(seconds)}`, ...lines].join("\n")
 }
