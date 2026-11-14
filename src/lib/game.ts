@@ -63,23 +63,6 @@ export function dailyPuzzle(day: string): Puzzle {
 
 export const isFilled = (value: Value): value is number => value !== EMPTY
 
-/** The places in a line that hold a digit that is there twice: a broken rule anyone can see. */
-export function doubles(values: readonly Value[]): Set<number> {
-  const places = new Set<number>()
-  values.forEach((value, i) => {
-    if (isFilled(value) && value > 0 && values.indexOf(value) !== i) {
-      places.add(i).add(values.indexOf(value))
-    }
-  })
-  return places
-}
-
-/** The black cells in a line that has more of them than the rules allow: also plain to see. */
-export function spare(values: readonly Value[], blacks: number): Set<number> {
-  const places = values.flatMap((value, i) => (value === 0 ? [i] : []))
-  return new Set(places.length > blacks ? places : [])
-}
-
 /** The grid is right: every cell holds what the solution holds. */
 export const solved = (cells: readonly Value[], solution: readonly number[]): boolean =>
   cells.every((value, i) => value === solution[i])

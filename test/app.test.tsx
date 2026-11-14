@@ -99,15 +99,10 @@ describe("filling in", () => {
     expect(document.querySelector("#check")).toBeNull()
   })
 
-  it("points out a digit twice in a line, and a black cell too many", () => {
+  it("points nothing out: a digit twice in a row looks like any other digit", () => {
     fill(0, 2)
     fill(1, 2)
-    expect(cell(0).className).toContain("double")
-    expect(cell(1).className).toContain("double")
-    expect(cell(2).className).not.toContain("double")
-    fill(n, BLACK)
-    fill(2 * n, BLACK)
-    expect(cell(2 * n).className).toContain("double")
+    expect(cell(1).className).not.toMatch(/double|bad|wrong/)
   })
 
   it("takes digits, black and arrows from the keyboard", () => {

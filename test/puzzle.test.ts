@@ -4,7 +4,6 @@ import {
   LEVELS,
   clock,
   dailyPuzzle,
-  doubles,
   freshTrail,
   isFilled,
   levelOf,
@@ -13,7 +12,6 @@ import {
   puzzleNumber,
   shareText,
   solved,
-  spare,
 } from "../src/lib/game"
 import {
   clueOf,
@@ -159,18 +157,6 @@ describe("a game", () => {
   it("numbers the puzzles from the first day", () => {
     expect(puzzleNumber("2026-11-11")).toBe(1)
     expect(puzzleNumber("2027-03-29")).toBe(139) // across the change to summer time
-  })
-
-  it("points out black cells when a line has more than it gets", () => {
-    expect([...spare([0, 1, 0, 2, 3], 1)].sort()).toEqual([0, 2])
-    expect(spare([0, 1, 4, 2, 3], 1).size).toBe(0)
-    expect(spare([0, 0, 0, EMPTY, 1], 2).size).toBe(3)
-  })
-
-  it("points out a digit that is in a line twice", () => {
-    expect([...doubles([4, 0, 4, EMPTY, 0])].sort()).toEqual([0, 2])
-    expect(doubles([4, 0, 1, EMPTY, 0]).size).toBe(0)
-    expect(doubles([0, 0, 0, 0, 0]).size).toBe(0) // black cells may repeat
   })
 
   it("is over when the grid is right, and not before", () => {

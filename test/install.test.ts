@@ -60,6 +60,10 @@ describe("the look", () => {
     expect(read("src/style.css")).toMatch(/html\{[^}]*background:var\(--bg\)/)
   })
 
+  it("points nothing out while playing: no red for a digit or a black cell too many in a line", () => {
+    expect(read("src/style.css")).not.toMatch(/\.double|\.bad|danger/)
+  })
+
   it("starts with the puzzle out of sight, and has no clock to look at while playing", () => {
     const style = read("src/style.css")
     expect(style).toContain('body[data-view="ready"] #play') // the puzzle is not shown before Start
