@@ -3,6 +3,8 @@
 import { create } from "zustand"
 import { at } from "../lib/at"
 import { EMPTY, noteMove, solved, type Value } from "../lib/game"
+import { BLACK } from "../lib/puzzle"
+import { buzz, solvedPattern, type Tick } from "../utils/haptics"
 import { calm, STEP } from "../utils/motion"
 import { loadGame, saveGame, type Game } from "./savedGame"
 import { n, solution } from "./today"
@@ -37,6 +39,14 @@ export function viewOf({ started, paused, finished, showResult }: GameStore): Vi
     return showResult ? "done" : "play"
   }
   return !started || paused ? "ready" : "play"
+}
+
+/** What is felt when `to` lands in a cell. */
+function tickFor(to: Value): Tick {
+  if (to === EMPTY) {
+    return "erase"
+  }
+  return to === BLACK ? "black" : "tile"
 }
 
 // The score is the time spent playing. It counts from Start and only while the puzzle is in
@@ -92,6 +102,12 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     if (finished) {
       last = null // the clock stops here, at the last move
       set({ finished, selected: null, tapped: null, revealing: true })
+    }
+    // felt under the finger: what landed, or the rows of the solved grid one after the other
+    if (finished) {
+      buzz(calm ? "tile" : solvedPattern(n, STEP))
+    } else {
+      buzz(tickFor(to))
     }
     saveGame(get())
     if (!finished) {

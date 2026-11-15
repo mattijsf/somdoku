@@ -91,6 +91,8 @@ export function Board(): ReactElement {
                 key={c}
                 type="button"
                 data-i={i}
+                // a digit makes the cell a tile; which digit only shows in colour once the grid is solved
+                data-v={digit ? value : undefined}
                 style={{ "--d": delay(r) }}
                 className={classes(
                   "cell",

@@ -21,10 +21,10 @@ export function TopBar(): ReactElement {
     <header className="top">
       <a className="logo" href="./" aria-label={t("top.home")}>
         <span className="mark" aria-hidden="true">
-          <i>4</i>
+          <i data-v="4">4</i>
           <i className="b" />
           <i className="b" />
-          <i>1</i>
+          <i data-v="1">1</i>
         </span>
         <b>{BRAND}</b>
       </a>

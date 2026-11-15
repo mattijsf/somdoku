@@ -1,22 +1,41 @@
-/* The greens and the typeface of woordscore.nl, so the two feel like one family. The tiles, the
-   keys and the little score picture are Somdoku's own. */
+/* A cheerful look of its own: lilac paper, violet buttons, and tiles like those of a board game.
+   The typeface is the one of woordscore.nl, so the two still feel like family.
+
+   A digit that is filled in is a yellow tile, whatever the digit: while playing, colour says
+   "filled" and nothing more. A colour for each digit would point out a digit that is in a line
+   twice, and seeing that is part of the puzzle. The four colours (--c1 to --c4) are for
+   decoration, and for the grid once it is solved. Green and amber are kept for what they mean in
+   the shared picture: filled in one go, altered later. */
 :root{
-  --bg:#EDF1EC; --surface:#FFFFFF; --cell:#FFFFFF; --key:#FFFFFF; --ink:#15231D; --muted:#5A6A62; --line:#CFD9D2;
-  --edge:#BDCAC1; --near:#DFEDE4; --green:#2E9B5F; --green-deep:#1D6B40; --tint-green:#CFEBD9;
-  --black:#15231D; --black-edge:#000; --black-line:transparent;
-  --amber:#E0B32E; --bubble:#DCF3E3; --off:#CFEBD9; --off-ink:#3F9567;
+  --bg:#F7F4FF; --surface:#FFFFFF; --cell:#FFFFFF; --key:#FFFFFF; --ink:#241E3D; --muted:#7C7699; --line:#E4DDF7;
+  --edge:#D6CCF0; --near:#EAE3FF; --green:#1FB06E; --green-deep:#15824F;
+  --black:#241E3D; --black-edge:#0F0B22; --black-line:transparent;
+  --amber:#FFAA1C; --bubble:#E2F7EA; --off:#EAE3FF; --off-ink:#9C94BF;
+  --accent:#7A5CFF; --accent-deep:#553AD1; --accent-ink:#FFFFFF;
+  --tile:#FFE28A; --tile-edge:#EBBF4B; --tile-ink:#4A3500;
+  --c1:#BFE4FF; --e1:#8DC8F5; --t1:#0B4A7A; --c2:#BEF1D0; --e2:#8CD9A8; --t2:#0E5A2E;
+  --c3:#FFE59C; --e3:#F0C552; --t3:#6B4A00; --c4:#FFC9DE; --e4:#F29CBD; --t4:#7A1244;
   --keyh:52px; --cap:78px;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --bg:#0E1A16; --surface:#182A21; --cell:#273D32; --key:#22362C; --ink:#E7EFEA; --muted:#94A69D; --line:#2F463B;
-    --edge:#050A08; --near:#324C3E; --green:#36A869; --green-deep:#1F6B42; --tint-green:#1F5A3A;
-    --black:#000; --black-edge:#000; --black-line:#22342B;
-    --amber:#D9AC2B; --bubble:#1C4A31; --off:#17352A; --off-ink:#4E8C6A;
+    --bg:#15112A; --surface:#211A3F; --cell:#2B2452; --key:#2B2452; --ink:#F5F2FF; --muted:#A79FCC; --line:#352C63;
+    --edge:#0E0A20; --near:#3D3475; --green:#3DDC84; --green-deep:#24A65F;
+    --black:#06040E; --black-edge:#000; --black-line:#3A3170;
+    --amber:#FFC93D; --bubble:#2B2452; --off:#211A3F; --off-ink:#6F679C;
+    --accent:#9A82FF; --accent-deep:#6B52DB; --accent-ink:#150B3F;
+    --tile:#FFD257; --tile-edge:#D29E15; --tile-ink:#3B2900;
+    --c1:#59B0FF; --e1:#2C7FD0; --t1:#04213D; --c2:#45DD8B; --e2:#23A45E; --t2:#04301A;
+    --c3:#FFCC45; --e3:#D39C12; --t3:#3B2900; --c4:#FF7BAC; --e4:#D0487E; --t4:#40061F;
   }
 }
+/* the colour of a digit, for the places that may show it */
+[data-v="1"]{--c:var(--c1);--e:var(--e1);--t:var(--t1)}
+[data-v="2"]{--c:var(--c2);--e:var(--e2);--t:var(--t2)}
+[data-v="3"]{--c:var(--c3);--e:var(--e3);--t:var(--t3)}
+[data-v="4"]{--c:var(--c4);--e:var(--e4);--t:var(--t4)}
 *,*::before,*::after{box-sizing:inherit}
 /* The page colour is on the root itself, not only on the body: an installed app draws under the
    phone's bars, and what shows there is the root. */
@@ -31,7 +50,7 @@ h1{font-size:1.6rem;line-height:1.1;font-weight:800;letter-spacing:-.02em;margin
 h2{font-size:1.4rem;line-height:1.15;font-weight:800;letter-spacing:-.01em;margin:0 0 14px}
 p{margin:0}
 button{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .hint{color:var(--muted);font-size:.9rem}
 
 /* The page fills the screen: the puzzle in the room that is left, the keys under the thumbs. A
@@ -60,6 +79,7 @@ body[data-view="done"] #play{flex:none}
 .mark{display:grid;grid-template-columns:repeat(2,14px);gap:2px}
 .mark i{height:14px;border-radius:3.5px;background:var(--cell);box-shadow:0 1px 0 var(--edge);
   display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.62rem;line-height:1;letter-spacing:0}
+.mark i[data-v]{background:var(--c);color:var(--t);box-shadow:none}
 .mark i.b{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
 .nr{color:var(--muted);font-weight:650;font-size:.9rem;white-space:nowrap;padding-top:3px}
 .tries{margin-left:auto;display:flex;align-items:center;gap:8px}
@@ -82,8 +102,8 @@ body[data-view="done"] #play{flex:none}
 .round:active::before,.round:active [data-icon]{transform:translateY(1px);box-shadow:0 1px 0 var(--edge)}
 /* pausing is for a game that is under way */
 #pause{margin-right:-10px}
-#pause [data-icon]{background:var(--green);color:#fff;box-shadow:0 2px 0 var(--green-deep)}
-#pause:active [data-icon]{box-shadow:0 1px 0 var(--green-deep)}
+#pause [data-icon]{background:var(--accent);color:var(--accent-ink);box-shadow:0 2px 0 var(--accent-deep)}
+#pause:active [data-icon]{box-shadow:0 1px 0 var(--accent-deep)}
 #pause .icon{width:15px;height:15px;fill:currentColor}
 body:not([data-view="play"]) #pause{display:none}
 
@@ -95,10 +115,16 @@ body[data-view="done"] #ready, body[data-view="done"] .pad, body[data-view="done
 /* the start: the name, the day and one button. The top bar keeps only the help button there. */
 body[data-view="ready"] .top .logo, body[data-view="ready"] .top .nr, body[data-view="ready"] .top .tries{visibility:hidden}
 .ready{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 0 12vh}
-.hero{display:grid;grid-template-columns:repeat(2,68px);gap:9px;margin-bottom:26px}
-.hero i{height:68px;border-radius:16px;background:var(--cell);box-shadow:0 4px 0 var(--edge);display:grid;place-items:center;
+.hero{display:grid;grid-template-columns:repeat(2,68px);gap:12px;margin-bottom:28px}
+.hero i{height:68px;border-radius:20px;background:var(--cell);box-shadow:0 5px 0 var(--edge);display:grid;place-items:center;
   font-style:normal;font-weight:800;font-size:2.1rem;line-height:1}
-.hero i.b{background:var(--black);box-shadow:0 4px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}
+.hero i[data-v]{background:var(--c);color:var(--t);box-shadow:0 5px 0 var(--e)}
+.hero i.b{background:var(--black);box-shadow:0 5px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}
+/* four tiles as they were dropped on the table */
+.hero i:nth-child(1){transform:rotate(-6deg)}
+.hero i:nth-child(2){transform:rotate(4deg)}
+.hero i:nth-child(3){transform:rotate(3deg)}
+.hero i:nth-child(4){transform:rotate(-4deg)}
 .ready h1{font-size:2.3rem;margin:0;display:flex;align-items:baseline;gap:10px}
 .ready h1 span{color:var(--muted);font-weight:650;font-size:1.15rem;letter-spacing:0}
 .lede{color:var(--muted);margin:4px 0 28px}
@@ -107,12 +133,12 @@ body[data-view="ready"] .top .logo, body[data-view="ready"] .top .nr, body[data-
 .ready .hint{margin-top:16px}
 /* the streak: days in a row, on the start screen and beside the result */
 .streak{display:inline-flex;align-items:center;gap:6px;padding:5px 13px 5px 10px;border-radius:999px;background:var(--surface);
-  font-size:.95rem;line-height:1.3}
+  box-shadow:0 2px 0 var(--edge);font-size:.95rem;line-height:1.3}
 .streak[hidden]{display:none}
 .streak [data-icon]{display:grid;color:var(--amber)}
 .streak .icon{width:16px;height:16px;fill:currentColor}
 .ready .streak{margin:-14px 0 24px}
-#done .streak{margin-top:14px;background:var(--bg)}
+#done .streak{margin-top:14px;background:var(--bg);box-shadow:none}
 /* the time is the score, but only shown when the game is over */
 body:not([data-view="done"]) .count{display:none}
 
@@ -124,16 +150,19 @@ body:not([data-view="done"]) .count{display:none}
 .clue.col{flex-direction:column;justify-content:flex-end;align-items:center;line-height:1.3;padding:3px 0 2px;margin-bottom:1px}
 .clue.sel{background:var(--near)}
 .clue.ok{color:var(--green)}
-.cell{aspect-ratio:1;min-width:0;display:grid;place-items:center;padding:0;border:0;border-radius:9px;font-weight:800;
+.cell{aspect-ratio:1;min-width:0;display:grid;place-items:center;padding:0;border:0;border-radius:min(14px,calc(var(--cap) * .22));font-weight:800;
   font-size:min(calc(38vw / var(--n)),calc(var(--cap) * .56),2.2rem);line-height:1;color:var(--ink);background:var(--cell);
-  box-shadow:0 2px 0 var(--edge);cursor:pointer;touch-action:manipulation}
+  box-shadow:0 3px 0 var(--edge);cursor:pointer;touch-action:manipulation}
 .cell.near{background:var(--near)}
-.cell.ok{background:var(--tint-green);box-shadow:none}
-.cell.black{background:var(--black);box-shadow:0 2px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}
-.cell.black.ok{box-shadow:inset 0 0 0 3px var(--green-deep)}
-.cell.sel{box-shadow:0 0 0 3px var(--green);z-index:1}
+/* a digit is a tile, the same tile for every digit */
+.cell[data-v]{background:var(--tile);color:var(--tile-ink);box-shadow:0 3px 0 var(--tile-edge)}
+/* solved: now every digit shows its colour */
+.cell.ok[data-v]{background:var(--c,var(--tile));color:var(--t,var(--tile-ink));box-shadow:0 3px 0 var(--e,var(--tile-edge))}
+.cell.black{background:var(--black);box-shadow:0 3px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}
+.cell.black.ok{box-shadow:inset 0 0 0 3px var(--green)}
+.cell.sel,.cell.sel[data-v]{box-shadow:0 0 0 3px var(--accent);z-index:1}
 .cell.tap{animation:tap .14s}
-/* the finished grid, shown row by row: every row turns green */
+/* the finished grid, shown row by row: every row bursts into colour */
 .cell.pop{animation:pop .5s var(--d) backwards}
 .cell.black.pop{animation-name:pop-black}
 .clue.pop{animation:pop-clue .5s var(--d) backwards}
@@ -141,12 +170,15 @@ body:not([data-view="done"]) .count{display:none}
 /* the keys under the puzzle */
 .pad{display:grid;gap:8px;margin-top:12px}
 .keys{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
-.key{display:flex;align-items:center;justify-content:center;gap:8px;min-height:var(--keyh);padding:0;border:0;border-radius:11px;
+.key{display:flex;align-items:center;justify-content:center;gap:8px;min-height:var(--keyh);padding:0;border:0;border-radius:16px;
   font-weight:800;font-size:1.45rem;line-height:1;background:var(--key);box-shadow:0 3px 0 var(--edge);cursor:pointer;
   touch-action:manipulation;transition:opacity .15s}
 .key:active{transform:translateY(2px);box-shadow:0 1px 0 var(--edge)}
 .key.tool{font-size:.95rem;font-weight:700}
-.key.on{background:var(--tint-green);box-shadow:0 3px 0 var(--green)}
+/* the digit keys are the tiles that go into the grid */
+.key.digit{background:var(--tile);color:var(--tile-ink);box-shadow:0 3px 0 var(--tile-edge)}
+.key.digit:active{box-shadow:0 1px 0 var(--tile-edge)}
+.key.on,.key.digit.on{box-shadow:0 0 0 3px var(--accent)}
 .swatch{flex:none;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:5px}
 .swatch.black{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
 .key svg{flex:none}
@@ -154,25 +186,25 @@ body:not([data-view="done"]) .count{display:none}
 
 /* buttons: a little raised, like the tiles */
 .btn{display:block;width:100%;font:inherit;font-weight:800;font-size:1.05rem;text-align:center;text-decoration:none;
-  color:var(--ink);background:var(--key);border:0;border-radius:12px;min-height:52px;
+  color:var(--ink);background:var(--key);border:0;border-radius:18px;min-height:52px;
   padding:13px 14px;cursor:pointer;box-shadow:0 3px 0 var(--edge);touch-action:manipulation}
 .btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--edge)}
-.btn.primary{background:var(--green);color:#fff;box-shadow:0 3px 0 var(--green-deep)}
-.btn.primary:active{box-shadow:0 1px 0 var(--green-deep)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 3px 0 var(--accent-deep)}
+.btn.primary:active{box-shadow:0 1px 0 var(--accent-deep)}
 .btn:disabled{cursor:default;transform:none;color:var(--off-ink);background:var(--off);box-shadow:none}
 /* always one line: a hint of another length must not push the grid and the keys up or down */
 .note{margin-top:8px;text-align:center;height:1.45em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* afterwards: the result as the message that will be sent */
-.card{background:var(--surface);border-radius:18px;padding:18px}
-#done{margin-top:14px;text-align:center;animation:rise .4s backwards}
+.card{background:var(--surface);border-radius:26px;padding:18px}
+#done{margin-top:14px;text-align:center;box-shadow:0 4px 0 var(--edge);animation:rise .4s backwards}
 #done .btn{margin-top:12px}
 #done-note:not(:empty){margin-top:8px}
 .bubble{display:inline-grid;gap:3px;justify-items:start;text-align:left;padding:9px 14px 13px;background:var(--bubble);
   border-radius:16px 16px 4px 16px}
 .bubble b{font-weight:650;margin-bottom:3px}
 .bubble span{display:flex;gap:3px}
-.bubble i{width:18px;height:18px;border-radius:4px;animation:pip .3s calc(var(--d) + .3s) backwards}
+.bubble i{width:18px;height:18px;border-radius:5px;animation:pip .3s calc(var(--d) + .3s) backwards}
 /* a line that says what just happened, for a moment */
 .toast{position:fixed;left:16px;right:16px;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:30;width:fit-content;margin:0 auto;
   padding:11px 18px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:.95rem;text-align:center;
@@ -187,7 +219,7 @@ body:not([data-view="done"]) .count{display:none}
 
 /* the rules */
 dialog{border:0;padding:0;background:none;color:var(--ink);width:min(440px,calc(100% - 24px));max-height:calc(100% - 24px);
-  overflow:auto;border-radius:18px}
+  overflow:auto;border-radius:26px}
 dialog[open]{animation:rise .3s}
 dialog::backdrop{background:rgba(8,14,11,.6)}
 .rules{font-size:.95rem;line-height:1.4}
@@ -198,16 +230,16 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
   color:var(--surface);display:grid;place-items:center;font-weight:800;font-size:.85rem}
 .example{margin:12px 0;padding:12px 12px 10px;border-radius:12px;background:var(--bg)}
 .tiles{display:flex;align-items:center;gap:4px;margin-bottom:6px}
-.tiles i{width:36px;height:36px;border-radius:7px;background:var(--cell);box-shadow:0 2px 0 var(--edge);
+.tiles i{width:36px;height:36px;border-radius:10px;background:var(--tile);color:var(--tile-ink);box-shadow:0 2px 0 var(--tile-edge);
   display:grid;place-items:center;font-style:normal;font-weight:800;font-size:1.15rem}
-.tiles i.black{background:var(--black);box-shadow:inset 0 0 0 1px var(--black-line)}
+.tiles i.black{background:var(--black);box-shadow:0 2px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}
 .sums{display:flex;gap:.5em;font-weight:750;padding-right:6px}
 .legend .swatch{width:24px;height:24px;border-radius:7px;background:var(--near);color:var(--ink);font-size:17px}
 .rules + form{margin-top:16px}
 
 @keyframes tap{from{transform:scale(.86)}}
-@keyframes pop{0%{background:var(--cell);box-shadow:0 2px 0 var(--edge)}45%{transform:scale(1.1)}}
-@keyframes pop-black{0%{box-shadow:0 2px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}45%{transform:scale(1.1)}}
+@keyframes pop{0%{background:var(--tile);color:var(--tile-ink);box-shadow:0 3px 0 var(--tile-edge)}45%{transform:scale(1.1)}}
+@keyframes pop-black{0%{box-shadow:0 3px 0 var(--black-edge),inset 0 0 0 1px var(--black-line)}45%{transform:scale(1.1)}}
 @keyframes pop-clue{0%{color:var(--ink)}45%{transform:scale(1.15)}}
 @keyframes pip{from{transform:scale(.3);opacity:0}}
 @keyframes rise{from{transform:translateY(14px);opacity:0}}
@@ -216,11 +248,12 @@ dialog::backdrop{background:rgba(8,14,11,.6)}
 .picker{position:fixed;z-index:20;pointer-events:none;display:flex;gap:6px;padding:6px;border-radius:16px;background:var(--surface);
   box-shadow:0 10px 28px rgba(0,0,0,.3),0 0 0 1px var(--line);animation:lift .12s;user-select:none;-webkit-user-select:none}
 .picker[hidden]{display:none}
-.pick{width:min(46px,calc((100vw - 58px) / 6));aspect-ratio:1;display:grid;place-items:center;padding:0;border:0;border-radius:11px;
+.pick{width:min(46px,calc((100vw - 58px) / 6));aspect-ratio:1;display:grid;place-items:center;padding:0;border:0;border-radius:13px;
   font:inherit;font-weight:800;font-size:1.25rem;line-height:1;color:var(--ink);background:var(--key);box-shadow:0 2px 0 var(--edge);
   transition:transform .08s}
-.pick.on{background:var(--tint-green)}
-.pick.hot{background:var(--green);color:#fff;transform:translateY(-4px)}
+.pick.digit{background:var(--tile);color:var(--tile-ink);box-shadow:0 2px 0 var(--tile-edge)}
+.pick.on,.pick.digit.on{box-shadow:0 0 0 2px var(--accent)}
+.pick.hot,.pick.digit.hot{background:var(--accent);color:var(--accent-ink);box-shadow:0 2px 0 var(--accent-deep);transform:translateY(-4px)}
 @keyframes lift{from{opacity:0;transform:translateY(6px) scale(.96)}}
 
 @media (prefers-reduced-motion: reduce){

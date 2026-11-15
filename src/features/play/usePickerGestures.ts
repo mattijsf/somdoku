@@ -5,6 +5,7 @@ import { useEffect, type PointerEvent as ReactPointerEvent } from "react"
 import { flushSync } from "react-dom"
 import { at } from "../../lib/at"
 import { isLive, useGameStore } from "../../stores/useGameStore"
+import { buzz } from "../../utils/haptics"
 import { keys } from "./keys"
 import { usePickerStore } from "./usePickerStore"
 
@@ -48,7 +49,14 @@ function optionAt(x: number, y: number): number {
 }
 
 function light(j: number): void {
+  if (j === usePickerStore.getState().lit) {
+    return
+  }
   usePickerStore.setState({ lit: j })
+  // a detent for every value the finger slides onto
+  if (j >= 0) {
+    buzz("step")
+  }
 }
 
 function openPicker(i: number, cellEl: HTMLElement): void {
@@ -73,12 +81,7 @@ function openPicker(i: number, cellEl: HTMLElement): void {
     top: Math.min(cell.top, top) - REACH,
     bottom: Math.max(cell.bottom, top + box.height) + REACH,
   }
-  // Not every browser has these, whatever the DOM types say: an iPhone has no vibrate.
-  const nav: { vibrate?: (pattern: VibratePattern) => boolean; userActivation?: UserActivation } =
-    navigator
-  if (nav.userActivation?.hasBeenActive) {
-    nav.vibrate?.(8) // a small tick under the finger, where the phone can
-  }
+  buzz("hold") // the row is up: felt, so there is no need to look for it
 }
 
 function closePicker(): void {

@@ -81,9 +81,10 @@ describe("filling in", () => {
     fireEvent.click(screen.getByRole("button", { name: "Start" }))
   })
 
-  it("puts a digit in the chosen cell, and the same key again empties it", () => {
+  it("puts a digit in the chosen cell as a tile, and the same key again empties it", () => {
     fill(0, 3)
     expect(cell(0).textContent).toBe("3")
+    expect(cell(0).dataset.v).toBe("3")
     fireEvent.click(keyFor(3))
     expect(cell(0).textContent).toBe("")
     expect(useGameStore.getState().cells[0]).toBe(EMPTY)

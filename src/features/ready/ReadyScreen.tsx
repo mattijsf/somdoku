@@ -20,10 +20,10 @@ export function ReadyScreen(): ReactElement {
   return (
     <section id="ready" className="ready">
       <div className="hero" aria-hidden="true">
-        <i>4</i>
+        <i data-v="4">4</i>
         <i className="b" />
         <i className="b" />
-        <i>1</i>
+        <i data-v="1">1</i>
       </div>
       <h1>
         {BRAND} <span id="ready-nr">#{number}</span>
