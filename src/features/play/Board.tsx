@@ -106,7 +106,8 @@ export function Board(): ReactElement {
                 onPointerDown={event => holdCell(event, i)}
                 onClick={() => {
                   if (!isSwallowing()) {
-                    select(i)
+                    // the chosen cell tapped again lets go of it; read now, not from the last render
+                    select(i === useGameStore.getState().selected ? null : i)
                   }
                 }}
               >

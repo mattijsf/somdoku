@@ -21,7 +21,7 @@ export interface GameStore extends Game {
   revealing: boolean
   /** The result is up: at once for a game solved earlier, after the reveal for one solved now. */
   showResult: boolean
-  select: (i: number) => void
+  select: (i: number | null) => void
   put: (value: Value) => void
   start: () => void
   pause: () => void
@@ -75,7 +75,7 @@ export const useGameStore = create<GameStore>()((set, get) => ({
     }
     set({
       selected: i,
-      justFilled: i !== game.justFilled ? null : game.justFilled,
+      justFilled: i !== null && i !== game.justFilled ? null : game.justFilled,
       tapped: null,
     })
   },

@@ -106,6 +106,16 @@ describe("filling in", () => {
     expect(cell(1).className).not.toMatch(/double|bad|wrong/)
   })
 
+  it("lets go of the chosen cell when it is tapped again, or when a tap lands outside", () => {
+    fireEvent.click(cell(4))
+    expect(useGameStore.getState().selected).toBe(4)
+    fireEvent.click(cell(4))
+    expect(useGameStore.getState().selected).toBeNull()
+    fireEvent.click(cell(4))
+    fireEvent.click(document.body)
+    expect(useGameStore.getState().selected).toBeNull()
+  })
+
   it("takes digits, black and arrows from the keyboard", () => {
     fireEvent.keyDown(document, { key: "ArrowRight" })
     expect(useGameStore.getState().selected).toBe(0)
