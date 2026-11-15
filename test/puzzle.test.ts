@@ -4,6 +4,7 @@ import {
   LEVELS,
   clock,
   dailyPuzzle,
+  dayBefore,
   freshTrail,
   isFilled,
   levelOf,
@@ -12,6 +13,7 @@ import {
   puzzleNumber,
   shareText,
   solved,
+  streak,
 } from "../src/lib/game"
 import {
   clueOf,
@@ -205,6 +207,30 @@ describe("a game", () => {
     expect(shareText({ name: "Somdoku 12", seconds: 222, trail, n: 2 })).toBe(
       "Somdoku 12 · 3:42\n🟩🟨\n🟩🟩"
     )
+  })
+
+  it("knows the day before, across a month, a year and the change of the clock", () => {
+    expect(dayBefore("2026-11-12")).toBe("2026-11-11")
+    expect(dayBefore("2026-12-01")).toBe("2026-11-30")
+    expect(dayBefore("2027-01-01")).toBe("2026-12-31")
+    expect(dayBefore("2027-03-29")).toBe("2027-03-28") // the day after summer time starts
+    expect(dayBefore("2028-03-01")).toBe("2028-02-29")
+  })
+
+  it("counts the days in a row that were solved, and today does not break it until it is over", () => {
+    const on =
+      (...days: string[]) =>
+      (day: string): boolean =>
+        days.includes(day)
+    expect(streak("2026-11-15", on())).toBe(0)
+    expect(streak("2026-11-15", on("2026-11-15"))).toBe(1)
+    // not solved yet today: the streak up to yesterday still stands
+    expect(streak("2026-11-15", on("2026-11-14", "2026-11-13"))).toBe(2)
+    expect(streak("2026-11-15", on("2026-11-15", "2026-11-14", "2026-11-13"))).toBe(3)
+    // a day missed ends it: what came before the gap does not count
+    expect(streak("2026-11-15", on("2026-11-13", "2026-11-12"))).toBe(0)
+    expect(streak("2026-11-15", on("2026-11-15", "2026-11-13", "2026-11-12"))).toBe(1)
+    expect(streak("2027-01-02", on("2027-01-01", "2026-12-31", "2026-12-30"))).toBe(3)
   })
 
   it("shows a game without a change as nothing but green", () => {

@@ -101,3 +101,16 @@ export function saveGame({
   const game: Game = { sums: played, cells, trail, started, paused, active, finished }
   store(storeKey(day), JSON.stringify(game))
 }
+
+/**
+ * Whether the puzzle of an earlier day was solved on this device. The games of earlier days are
+ * still kept, each under its own day, so the streak needs nothing of its own to be stored.
+ */
+export function solvedBefore(someDay: string): boolean {
+  try {
+    const game = kept(storeKey(someDay))
+    return isRecord(game) && game.finished === true
+  } catch {
+    return false
+  }
+}

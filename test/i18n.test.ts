@@ -22,6 +22,13 @@ describe("the translations", () => {
     expect(i18n.t("done.changedLater", { lng: "nl" })).toBe("later aangepast")
   })
 
+  it("say the streak in days, one or more", () => {
+    expect(i18n.t("streak", { count: 1, lng: "en" })).toBe("Streak: 1 day")
+    expect(i18n.t("streak", { count: 12, lng: "en" })).toBe("Streak: 12 days")
+    expect(i18n.t("streak", { count: 1, lng: "nl" })).toBe("Reeks: 1 dag")
+    expect(i18n.t("streak", { count: 12, lng: "nl" })).toBe("Reeks: 12 dagen")
+  })
+
   it("say what Woordle says after copying", () => {
     expect(i18n.t("done.copied", { lng: "nl" })).toBe("Score gekopieerd")
   })

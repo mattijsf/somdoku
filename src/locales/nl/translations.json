@@ -1,6 +1,8 @@
 {
   "dateLocale": "nl-NL",
   "solvedIn": "Opgelost in {{time}}",
+  "streak_one": "Reeks: {{count}} dag",
+  "streak_other": "Reeks: {{count}} dagen",
   "top": {
     "home": "Somdoku, naar de puzzel van vandaag",
     "pause": "Pauze",

@@ -35,6 +35,23 @@ const utc = (day: string): number => {
 export const puzzleNumber = (day: string): number =>
   Math.round((utc(day) - utc(FIRST_DAY)) / 86400000) + 1
 
+/** The day before, as 2026-11-10. */
+export const dayBefore = (day: string): string =>
+  new Date(utc(day) - 86400000).toISOString().slice(0, 10)
+
+/**
+ * The streak: how many days in a row the puzzle was solved, up to and including `day`.
+ * `solvedOn(day)` says whether a day's puzzle was solved. A day that is not solved yet does not
+ * break the streak: it then runs up to yesterday, and today can still add to it.
+ */
+export function streak(day: string, solvedOn: (day: string) => boolean): number {
+  let count = 0
+  for (let d = solvedOn(day) ? day : dayBefore(day); solvedOn(d); d = dayBefore(d)) {
+    count += 1
+  }
+  return count
+}
+
 /**
  * How hard a day's puzzle is: the number of rounds of reasoning, row by row and column by column,
  * that it takes to finish. 3 is light, 5 (or more) is stiff. It is drawn from the date, so it

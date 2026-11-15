@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactElement } from "react"
 import { flushSync } from "react-dom"
 import { useTranslation } from "react-i18next"
+import { Streak } from "../../components/Streak"
 import { at } from "../../lib/at"
 import { clock, marks, shareText } from "../../lib/game"
 import { n, name } from "../../stores/today"
@@ -68,6 +69,7 @@ export function DoneScreen(): ReactElement {
           <button id="share" className="btn primary" type="button" onClick={() => void share()}>
             {hint ? t("done.copyAbove") : t("done.share")}
           </button>
+          <Streak id="done-streak" />
           <p id="done-note" className="hint">
             {t("done.tomorrow")}
           </p>

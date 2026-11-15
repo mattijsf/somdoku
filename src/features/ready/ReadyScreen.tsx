@@ -1,5 +1,6 @@
 import type { ReactElement } from "react"
 import { useTranslation } from "react-i18next"
+import { Streak } from "../../components/Streak"
 import { BRAND, number } from "../../stores/today"
 import { useGameStore } from "../../stores/useGameStore"
 
@@ -30,6 +31,7 @@ export function ReadyScreen(): ReactElement {
       <p id="ready-day" className="lede">
         {today}
       </p>
+      <Streak id="ready-streak" />
       <button id="start" className="btn primary" type="button" onClick={start}>
         {started ? t("ready.resume") : t("ready.start")}
       </button>

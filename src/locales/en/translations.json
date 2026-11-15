@@ -1,6 +1,8 @@
 {
   "dateLocale": "en-GB",
   "solvedIn": "Solved in {{time}}",
+  "streak_one": "Streak: {{count}} day",
+  "streak_other": "Streak: {{count}} days",
   "top": {
     "home": "Somdoku, to today's puzzle",
     "pause": "Pause",
