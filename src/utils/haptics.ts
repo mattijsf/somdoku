@@ -4,13 +4,16 @@
 // modern phone renders as a crisp tick rather than a buzz, a little longer for what is heavier,
 // and a rhythm for the moment the grid is solved.
 
-/** One pulse each, in ms. The differences are small on purpose: felt, not noticed. */
+/**
+ * One pulse each, in ms. A page cannot ask for a softer pulse, only a shorter one, and shorter is
+ * what feels softer. These are about half of the first try, which was too hard on a phone.
+ */
 export const TICKS = {
-  hold: 12, // a held cell lets go of its row of values
-  step: 4, // the finger slides onto another value: a detent, as on a dial
-  tile: 10, // a digit lands in a cell
-  black: 22, // a black cell lands: heavier
-  erase: 5, // a cell is emptied: lighter
+  hold: 6, // a held cell lets go of its row of values
+  step: 2, // the finger slides onto another value: a detent, as on a dial
+  tile: 5, // a digit lands in a cell
+  black: 10, // a black cell lands: heavier
+  erase: 3, // a cell is emptied: lighter
 } as const satisfies Record<string, number>
 export type Tick = keyof typeof TICKS
 
@@ -20,13 +23,13 @@ export type Tick = keyof typeof TICKS
  * largest. A pattern is on, off, on, off, …; it starts with nothing so the first tick can wait.
  */
 export function solvedPattern(rows: number, step: number, lead = 200): number[] {
-  const tick = 14
+  const tick = 7
   const pattern = [0, lead]
   for (let row = 0; row < rows; row++) {
     pattern.push(tick, step - tick)
   }
   pattern[pattern.length - 1] = 180 // a breath after the last row
-  pattern.push(70)
+  pattern.push(30)
   return pattern
 }
 

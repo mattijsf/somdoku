@@ -96,6 +96,17 @@ describe("the look", () => {
     expect(read("src/style.css")).not.toMatch(/\.double|\.bad|danger/)
   })
 
+  it("has large keys: digits on top, Black as a black key and Clear as an outline below", () => {
+    const style = read("src/style.css")
+    expect(style).toContain(":root{--keyh:clamp(52px,8.5dvh,66px)}")
+    expect(style).toContain(".key.digit{font-size:1.9rem}")
+    expect(style).toContain(".key.black{background:var(--black);")
+    expect(style).toContain(
+      ".key.erase{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 2px var(--line)}"
+    )
+    expect(style).toContain(".stage{flex:1;display:grid;grid-template-rows:3fr auto 1fr}")
+  })
+
   it("starts with the puzzle out of sight, and has no clock to look at while playing", () => {
     const style = read("src/style.css")
     expect(style).toContain('body[data-view="ready"] #play') // the puzzle is not shown before Start
@@ -117,14 +128,14 @@ describe("the feel", () => {
   it("ticks under the finger: short pulses, heavier for black, and a rhythm when solved", () => {
     // every tick is short enough to feel like a tick, not a buzz
     for (const ms of Object.values(TICKS)) {
-      expect(ms).toBeLessThanOrEqual(25)
+      expect(ms).toBeLessThanOrEqual(10)
     }
     expect(TICKS.erase).toBeLessThan(TICKS.tile)
     expect(TICKS.tile).toBeLessThan(TICKS.black)
     // solved: nothing until the first row is at its largest, a tick for every row in step with
     // the rows, a breath, and a longer one to end on
     const pattern = solvedPattern(5, 110)
-    expect(pattern).toEqual([0, 200, 14, 96, 14, 96, 14, 96, 14, 96, 14, 180, 70])
+    expect(pattern).toEqual([0, 200, 7, 103, 7, 103, 7, 103, 7, 103, 7, 180, 30])
     expect(pattern.length % 2).toBe(1) // ends on a pulse, not on a pause
   })
 
