@@ -104,7 +104,7 @@ describe("the look", () => {
     expect(style).toContain(
       ".key.erase{background:transparent;color:var(--muted);box-shadow:inset 0 0 0 2px var(--line)}"
     )
-    expect(style).toContain(".stage{flex:1;display:grid;grid-template-rows:3fr auto 1fr}")
+    expect(style).toContain(".stage{flex:1;display:grid;grid-template-rows:1fr auto 1fr}") // the puzzle in the middle
   })
 
   it("starts with the puzzle out of sight, and has no clock to look at while playing", () => {
