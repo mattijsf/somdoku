@@ -1,5 +1,6 @@
-/* A cheerful look of its own: lilac paper, violet buttons, and tiles like those of a board game.
-   The typeface is the one of woordscore.nl, so the two still feel like family.
+/* A cheerful look of its own: deep purple, violet buttons, and bright tiles like those of a board
+   game. There is one look, a dark one, whatever the phone is set to: the colours are at their
+   best on it. The typeface is the one of woordscore.nl, so the two still feel like family.
 
    A digit that is filled in is a yellow tile, whatever the digit: while playing, colour says
    "filled" and nothing more. A colour for each digit would point out a digit that is in a line
@@ -7,29 +8,17 @@
    decoration, and for the grid once it is solved. Green and amber are kept for what they mean in
    the shared picture: filled in one go, altered later. */
 :root{
-  --bg:#F7F4FF; --surface:#FFFFFF; --cell:#FFFFFF; --key:#FFFFFF; --ink:#241E3D; --muted:#7C7699; --line:#E4DDF7;
-  --edge:#D6CCF0; --near:#EAE3FF; --green:#1FB06E; --green-deep:#15824F;
-  --black:#241E3D; --black-edge:#0F0B22; --black-line:transparent;
-  --amber:#FFAA1C; --bubble:#E2F7EA; --off:#EAE3FF; --off-ink:#9C94BF;
-  --accent:#7A5CFF; --accent-deep:#553AD1; --accent-ink:#FFFFFF;
-  --tile:#FFE28A; --tile-edge:#EBBF4B; --tile-ink:#4A3500;
-  --c1:#BFE4FF; --e1:#8DC8F5; --t1:#0B4A7A; --c2:#BEF1D0; --e2:#8CD9A8; --t2:#0E5A2E;
-  --c3:#FFE59C; --e3:#F0C552; --t3:#6B4A00; --c4:#FFC9DE; --e4:#F29CBD; --t4:#7A1244;
+  --bg:#15112A; --surface:#211A3F; --cell:#2B2452; --key:#2B2452; --ink:#F5F2FF; --muted:#A79FCC; --line:#352C63;
+  --edge:#0E0A20; --near:#3D3475; --green:#3DDC84; --green-deep:#24A65F;
+  --black:#06040E; --black-edge:#000; --black-line:#3A3170;
+  --amber:#FFC93D; --bubble:#2B2452; --off:#211A3F; --off-ink:#6F679C;
+  --accent:#9A82FF; --accent-deep:#6B52DB; --accent-ink:#150B3F;
+  --tile:#FFD257; --tile-edge:#D29E15; --tile-ink:#3B2900;
+  --c1:#59B0FF; --e1:#2C7FD0; --t1:#04213D; --c2:#45DD8B; --e2:#23A45E; --t2:#04301A;
+  --c3:#FFCC45; --e3:#D39C12; --t3:#3B2900; --c4:#FF7BAC; --e4:#D0487E; --t4:#40061F;
   --keyh:52px; --cap:78px;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#15112A; --surface:#211A3F; --cell:#2B2452; --key:#2B2452; --ink:#F5F2FF; --muted:#A79FCC; --line:#352C63;
-    --edge:#0E0A20; --near:#3D3475; --green:#3DDC84; --green-deep:#24A65F;
-    --black:#06040E; --black-edge:#000; --black-line:#3A3170;
-    --amber:#FFC93D; --bubble:#2B2452; --off:#211A3F; --off-ink:#6F679C;
-    --accent:#9A82FF; --accent-deep:#6B52DB; --accent-ink:#150B3F;
-    --tile:#FFD257; --tile-edge:#D29E15; --tile-ink:#3B2900;
-    --c1:#59B0FF; --e1:#2C7FD0; --t1:#04213D; --c2:#45DD8B; --e2:#23A45E; --t2:#04301A;
-    --c3:#FFCC45; --e3:#D39C12; --t3:#3B2900; --c4:#FF7BAC; --e4:#D0487E; --t4:#40061F;
-  }
 }
 /* the colour of a digit, for the places that may show it */
 [data-v="1"]{--c:var(--c1);--e:var(--e1);--t:var(--t1)}
@@ -41,7 +30,7 @@
    phone's bars, and what shows there is the root. */
 /* React renders into #root; the layout is that of body, as if #root were not there */
 #root{display:contents}
-html{height:100%;overscroll-behavior:none;background:var(--bg);color-scheme:light dark}
+html{height:100%;overscroll-behavior:none;background:var(--bg);color-scheme:dark}
 body{margin:0;min-height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);
   font-family:"Bricolage Grotesque Variable",ui-rounded,"Segoe UI",system-ui,-apple-system,sans-serif;
   font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%;

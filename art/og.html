@@ -6,30 +6,30 @@
 <style>
   @font-face{font-family:B;font-weight:200 800;src:url("../node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2") format("woff2-variations")}
   *{box-sizing:border-box;margin:0}
-  body{width:1200px;height:630px;overflow:hidden;background:#F7F4FF;color:#241E3D;font-family:B,sans-serif;font-variant-numeric:tabular-nums;
+  body{width:1200px;height:630px;overflow:hidden;background:#15112A;color:#F5F2FF;font-family:B,sans-serif;font-variant-numeric:tabular-nums;
     display:grid;grid-template-columns:1fr auto;align-items:center;padding:0 76px 0 84px}
   .mark{display:grid;grid-template-columns:repeat(2,38px);gap:6px;margin-bottom:20px}
   .mark i{height:38px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:26px}
-  .mark i.four{background:#FFC9DE;color:#7A1244;box-shadow:0 4px 0 #F29CBD}
-  .mark i.one{background:#BFE4FF;color:#0B4A7A;box-shadow:0 4px 0 #8DC8F5}
-  .mark i.b{background:#241E3D;box-shadow:0 4px 0 #0F0B22}
+  .mark i.four{background:#FF7BAC;color:#40061F;box-shadow:0 4px 0 #D0487E}
+  .mark i.one{background:#59B0FF;color:#04213D;box-shadow:0 4px 0 #2C7FD0}
+  .mark i.b{background:#06040E;box-shadow:0 4px 0 #000,inset 0 0 0 1px #3A3170}
   h1{font-size:100px;line-height:1;font-weight:800;letter-spacing:-.03em}
-  p{margin-top:14px;font-size:35px;line-height:1.2;font-weight:600;color:#7C7699}
+  p{margin-top:14px;font-size:35px;line-height:1.2;font-weight:600;color:#A79FCC}
   /* a shared score: the time, and a square per cell in the order they were filled */
-  .bubble{display:inline-grid;gap:5px;margin-top:28px;padding:16px 24px 22px;background:#E2F7EA;border-radius:28px 28px 28px 8px}
+  .bubble{display:inline-grid;gap:5px;margin-top:28px;padding:16px 24px 22px;background:#2B2452;border-radius:28px 28px 28px 8px}
   .bubble b{font-size:29px;font-weight:650;margin-bottom:5px}
   .bubble span{display:flex;gap:5px}
-  .bubble i{width:27px;height:27px;border-radius:7px;background:#1FB06E}
-  .bubble i.y{background:#FFAA1C}
+  .bubble i{width:27px;height:27px;border-radius:7px;background:#3DDC84}
+  .bubble i.y{background:#FFC93D}
   .board{display:grid;grid-template-columns:auto repeat(5,80px);gap:9px;font-weight:800}
   .clue{display:flex;font-size:28px;font-weight:750}
   .clue.col{flex-direction:column;justify-content:flex-end;align-items:center;line-height:1.25;padding-bottom:6px}
   .clue.row{justify-content:flex-end;align-items:center;gap:.5em;padding-right:12px}
-  .cell{height:80px;border-radius:18px;background:#fff;box-shadow:0 4px 0 #D6CCF0;display:grid;place-items:center;font-size:46px;line-height:1}
+  .cell{height:80px;border-radius:18px;background:#2B2452;box-shadow:0 4px 0 #0E0A20;display:grid;place-items:center;font-size:46px;line-height:1}
   /* a digit is a yellow tile, whichever digit it is */
-  .cell:not(:empty){background:#FFE28A;color:#4A3500;box-shadow:0 4px 0 #EBBF4B}
-  .cell.b{background:#241E3D;box-shadow:0 4px 0 #0F0B22}
-  .cell.sel{box-shadow:0 0 0 5px #7A5CFF}
+  .cell:not(:empty){background:#FFD257;color:#3B2900;box-shadow:0 4px 0 #D29E15}
+  .cell.b{background:#06040E;box-shadow:0 4px 0 #000,inset 0 0 0 1px #3A3170}
+  .cell.sel{box-shadow:0 0 0 5px #9A82FF}
 </style>
 <div>
   <div class="mark"><i class="four">4</i><i class="b"></i><i class="b"></i><i class="one">1</i></div>

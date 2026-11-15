@@ -1,5 +1,5 @@
 // What a phone needs to install the game as an app, and how it looks: a manifest the page points
-// to, icons that exist and are the size they say, a light and a dark look, and a service worker.
+// to, icons that exist and are the size they say, one dark look, and a service worker.
 import { describe, expect, it } from "vitest"
 import { TICKS, solvedPattern } from "../src/utils/haptics"
 import { read, readBytes, sources } from "./files"
@@ -59,22 +59,16 @@ describe("the installable app", () => {
 })
 
 describe("the look", () => {
-  it("gives the phone a colour for its bars that does not glare in the dark", () => {
-    // The manifest has one colour for both looks; a light bar under a dark page is the worse of the two.
+  it("has one look, a dark one, whatever the phone is set to, and gives the bars its colour", () => {
     expect(manifest).toMatchObject({ background_color: "#15112A", theme_color: "#15112A" })
     const page = read("index.html")
-    expect(page).toContain('<meta name="color-scheme" content="light dark">')
-    expect(page).toContain(
-      '<meta name="theme-color" content="#15112A" media="(prefers-color-scheme: dark)">'
-    )
-    // the bars take the colour of the page, in both looks
+    expect(page).toContain('<meta name="color-scheme" content="dark">')
+    expect(page).toContain('<meta name="theme-color" content="#15112A">')
+    expect(page).not.toMatch(/prefers-color-scheme/)
     const style = read("src/style.css")
-    expect(style).toMatch(/:root\{\s*--bg:#F7F4FF;/)
-    expect(style).toMatch(/prefers-color-scheme: dark\)\{\s*:root\{\s*--bg:#15112A;/)
-    expect(page).toContain(
-      '<meta name="theme-color" content="#F7F4FF" media="(prefers-color-scheme: light)">'
-    )
-    expect(style).toMatch(/html\{[^}]*background:var\(--bg\)/)
+    expect(style).toMatch(/:root\{\s*--bg:#15112A;/)
+    expect(style).not.toMatch(/prefers-color-scheme/)
+    expect(style).toMatch(/html\{[^}]*background:var\(--bg\)[^}]*color-scheme:dark\}/)
   })
 
   it("gives every digit the same tile while playing: a colour per digit only once the grid is solved", () => {

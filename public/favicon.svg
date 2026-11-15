@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="7" fill="#7A5CFF"/>
-  <rect x="4" y="4" width="11" height="11" rx="3" fill="#FFC9DE"/>
-  <rect x="17" y="4" width="11" height="11" rx="3" fill="#241E3D"/>
-  <rect x="4" y="17" width="11" height="11" rx="3" fill="#241E3D"/>
-  <rect x="17" y="17" width="11" height="11" rx="3" fill="#BFE4FF"/>
+  <rect x="4" y="4" width="11" height="11" rx="3" fill="#FF7BAC"/>
+  <rect x="17" y="4" width="11" height="11" rx="3" fill="#15112A"/>
+  <rect x="4" y="17" width="11" height="11" rx="3" fill="#15112A"/>
+  <rect x="17" y="17" width="11" height="11" rx="3" fill="#59B0FF"/>
   <g font-family="system-ui,-apple-system,sans-serif" font-size="9.5" font-weight="800" text-anchor="middle">
-    <text x="9.5" y="12.9" fill="#7A1244">4</text>
-    <text x="22.5" y="25.9" fill="#0B4A7A">1</text>
+    <text x="9.5" y="12.9" fill="#40061F">4</text>
+    <text x="22.5" y="25.9" fill="#04213D">1</text>
   </g>
 </svg>
