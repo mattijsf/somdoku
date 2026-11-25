@@ -1,8 +1,7 @@
 # Somdoku
 
-A Japanese sums puzzle every day, made for phones. Everyone gets the same puzzle; afterwards you
-share your score as a picture of squares, as with Wordle. In English and Dutch, following the
-browser's language.
+Daily Japanese sums puzzle for mobile. Everyone gets the same puzzle; scores are shared as an emoji
+grid, like Wordle. English and Dutch, based on the browser language.
 
 ```bash
 npm install
@@ -11,19 +10,22 @@ npm run check
 npm run deploy
 ```
 
-`npm run check` runs `tsc -b` (strict), ESLint, Prettier (with sorted imports) and the tests.
-`npm install` sets up the git hooks through lefthook: on commit, ESLint and Prettier on the changed
-files plus `tsc -b`, and commitlint on the message (Conventional Commits); on push, every check.
+`npm run check` runs the typecheck (`tsc -b`), ESLint, Prettier and the tests. `npm install`
+installs the lefthook git hooks:
 
-## How it works
+- pre-commit: ESLint and Prettier on staged files, `tsc -b`
+- commit-msg: commitlint (Conventional Commits)
+- pre-push: all checks
 
-- `src/lib/`: the rules, generator and solver, and the game logic. No React, no DOM. 5 by 5, digits
-  1 to 4, one black cell per row and column. A day's puzzle comes from its date, so changing the
-  generator changes every day.
-- `src/stores/`: zustand stores for the game and the UI. The game is kept in `localStorage`.
-- `src/features/`: the screens (`ready`, `play`, `done`), the top bar and the rules.
-- `src/components/`, `src/hooks/`, `src/utils/`: shared pieces, the clock and keyboard, haptics.
-- `src/locales/`: English and Dutch translations (react-i18next).
-- `src/sw.ts`: the service worker, so the game installs as an app and works offline.
-- `functions/_middleware.ts`: sends www.somdoku.nl and somdoku.pages.dev on to somdoku.nl.
-- `art/`: source of the icon and `og.png`; `npm run icons` and `npm run og` make them again.
+## Structure
+
+- `src/lib/`: puzzle generator, solver and game logic. Puzzles are seeded by date, so changing the
+  generator changes all of them.
+- `src/stores/`: zustand stores for the game and the UI. Game state persists in `localStorage`.
+- `src/features/`: screens (`ready`, `play`, `done`), top bar and rules dialog.
+- `src/components/`, `src/hooks/`, `src/utils/`: shared components, clock and keyboard hooks,
+  haptics.
+- `src/locales/`: en/nl translations (react-i18next).
+- `src/sw.ts`: service worker for offline use and install.
+- `functions/_middleware.ts`: redirects www.somdoku.nl and somdoku.pages.dev to somdoku.nl.
+- `art/`: sources for the icon and `og.png` (`npm run icons`, `npm run og`).
